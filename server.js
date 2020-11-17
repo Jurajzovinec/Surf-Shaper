@@ -5,8 +5,6 @@ const cors = require("cors"); // cross-origin resource sharing
 const onshapeAPI = require("./lib/onshapeAPI");
 const apiCommands = new onshapeAPI.Client();
 
-// app.use(cors({origin : "http://localhost:3000"}));
-
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
