@@ -1,6 +1,6 @@
 # SurfShaper !
 
-## Purpose of application?
+## Purpose of SurfShaper application?
 Main goal of this web appliciation is allow to user create and shape his own sufboard. After surfboard is shaped, board could be downloaded in stl format. After that shaped surfboard may be dispatched to his local CNC master who can made this surfboard made of styrofoam.
 
 ## How does app work?
