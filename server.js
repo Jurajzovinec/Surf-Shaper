@@ -1,6 +1,10 @@
 const express = require('express');
 const onshape = require("./lib/onshapeAPI");
+const cors = require('cors');
 const app = express();
+
+
+app.use(cors({origin: "http://localhost:3000"}));
 
 app.use(express.static('public'));
 
@@ -17,7 +21,7 @@ app.get('/updateParameter', (req, res) => {
     .then(res.send('Hello World Extreme'));
 });
 
-app.listen(5000, () => console.log("Express Running on Port 5000, server_up"));
+app.listen(5000, () => console.log("Express Running on Port 5000, server"));
 
 
 
