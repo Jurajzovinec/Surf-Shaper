@@ -1,38 +1,37 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import React, { Component } from "react";
 import Slider from './Slider';
 
 class BuildSliders extends Component {
     constructor (props) {
-        console.log('Constructor')
         super(props)
-        this.state = this.getParameters();
+        this.state = { 
+            dimensions: []
+        }
     }
 
-    async getParameters() {
+    componentDidMount() {
         const headers = {
             "Content-Type": "multipart/form-data",
             Accept: "application/json",
         };
-        try {
-            const response = await axios.get("http://localhost:5000/configparams", headers);
-            console.log(response.data);
-            //setParams(response.data);
-            //this.state = response.data;
-            return response.data;
-        } catch (error) {
-            console.error(error);
-        }
+        fetch("http://localhost:5000/configparams", headers)
+        .then(response => response.json())
+        .then(dimensionList => {
+            this.setState({dimensions: dimensionList});
+        })
+
     }
 
-    return (
-        <div>
-            {this.state.map(eachState => {
-                console.log(eachState);
-                return <Slider key = {eachState.name} min = {eachState.minValue} max = {eachState.maxValue} curValue = {eachState.defValue}/>
-            })}
-        </div>
-    );
+    render() {
+        return (
+            <ul>
+                {this.state.dimensions.map((dimension) => {
+                   return <Slider key = {dimension.name} min = {dimension.minValue.toString()} max = {dimension.maxValue.toString()} curValue = {dimension.defValue.toString()}/>
+                })}
+            </ul>
+        );
+    }
+    
 }
 
 export default BuildSliders;
