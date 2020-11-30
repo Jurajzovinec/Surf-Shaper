@@ -1,12 +1,12 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component } from "react";
 import './App.css';
+import BuildSliders from './BuildSliders';
 
 class App extends Component {
-
   render() {
     return (
       <div className="App">
-        <p>Text</p>
+        <BuildSliders/>
       </div>
     )
   } 
