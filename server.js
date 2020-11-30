@@ -18,13 +18,18 @@ app.get('/view', (req, res) => {
 
 app.get('/configparams', (req, res) => {
     onshape.getConfigurationParams()
-    .then(reponse=>res.send(reponse));
+        .then(reponse => res.send(reponse));
 });
 
-app.get('/updateParameter', (req, res) => {
+app.get('/updateparameter', (req, res) => {
     onshape.configureAndTranslate("SurfWidth", 500)
         .then(res.send('Hello World Extreme'));
 });
+
+app.get('/retrievemodel', (req, res) => {
+    onshape.fullTranslation()
+        .then(gltfModelData => res.send(gltfModelData))
+})
 
 app.listen(5000, () => console.log("Express Running on Port 5000, server"));
 
