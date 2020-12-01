@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+
 class Surfboard extends Component {
     constructor(props) {
         super(props)
@@ -11,7 +12,7 @@ class Surfboard extends Component {
             Accept: "application/json",
         };
         fetch("http://localhost:5000/retrievemodel", headers)
-            //.then(response => response.json())
+            .then(response => response.text())
             .then(gltfModelData => {
                 this.setState({ gltfModelData: gltfModelData });
                 console.log(this.state.gltfModelData);
@@ -20,7 +21,7 @@ class Surfboard extends Component {
     render() {
         return (
             <div>
-                <p>text</p>
+                <p>{this.state.gltfModelData}</p>
             </div>
         )
     }

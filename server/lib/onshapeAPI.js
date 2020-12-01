@@ -132,7 +132,6 @@ const getExternalData = function (documentId, resultExternalDataIds) {
     return new Promise(async (resolve, reject) => {
         fetch(absoluteUrl, bodyToPassInFetch)
             .then(res => resolve(res.text()))
-            //.then(res => fs.appendFile('public/surf.gltf', res, () => resolve('Chunk Saved!')))
             .catch(error => reject(`Error: ${error}`));
     });
 };
