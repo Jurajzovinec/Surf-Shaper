@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import './App.css';
-import BuildSliders from './BuildSliders';
-import Surf from './Surf'
+import BuildSliders from './components/BuildSliders';
+import Surf from './components/Surf';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <BuildSliders/>
         <Surf/>
+        <BuildSliders/>
       </div>
     )
   } 

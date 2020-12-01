@@ -6,7 +6,9 @@
   "author": {
     "name": "Juraj Zovinec"
   },
-  "scripts": {},
+  "scripts": {
+    "start": "nodemon server"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

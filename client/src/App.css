@@ -1,18 +1,12 @@
 .App{
-  margin: 0;
-  overflow: hidden;
-  background-image: url(https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940);
-  position: fixed;
-  min-width: 100%;
-  min-height: 100%;
-  background-size: cover;
-  background-position: center; 
-}
-body{
-  margin: 0;
-}
-.sliders{
-  margin-left: 90em;
-  box-shadow: 0px 1px 10px 1px black;
-}
-
+    margin: 0;
+    overflow: hidden;
+    position: fixed;
+    min-width: 100%;
+    min-height: 100%;
+    background-size: cover;
+    background-position: center; 
+  }
+  body{
+    margin: 0;
+  }
