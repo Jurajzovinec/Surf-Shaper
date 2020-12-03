@@ -31,11 +31,11 @@ class BuildSliders extends Component {
 
     render() {
         return (
-            <ul>
+            <div className>
                 {this.state.dimensions.map((dimension) => {
                     return <Slider key={dimension.name} min={dimension.minValue.toString()} max={dimension.maxValue.toString()} curValue={dimension.defValue.toString()} />
                 })}
-            </ul>
+            </div>
         );
     }
 

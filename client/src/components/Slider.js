@@ -1,28 +1,32 @@
 import React, { Component } from 'react';
- 
+
 class Slider extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props)
         this.state = { values: props };
     }
- 
+
     displayChange = (e) => {
         e.preventDefault();
         e.target.parentElement.querySelector('span').textContent = e.target.value;
         this.setState({ curValue: e.target.value });
     }
 
-    componentDidMount(){
+    componentDidMount() {
+        console.log(this.state);
+    }
+
+    componentWillUnmount() {
         console.log(this.state);
     }
 
     render() {
         return (
             <div>
-                <input type="range" 
-                    min={this.state.values.min} 
-                    max={this.state.values.max} 
-                    className="slider" 
+                <input type="range"
+                    min={this.state.values.min}
+                    max={this.state.values.max}
+                    className="slider"
                     onChange={this.displayChange}>
                 </input>
                 <span></span>
