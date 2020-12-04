@@ -31,7 +31,7 @@ class BuildSliders extends Component {
 
     render() {
         return (
-            <div className>
+            <div className="sliders">
                 {this.state.dimensions.map((dimension) => {
                     return <Slider key={dimension.name} min={dimension.minValue.toString()} max={dimension.maxValue.toString()} curValue={dimension.defValue.toString()} />
                 })}

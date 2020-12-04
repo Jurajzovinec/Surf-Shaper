@@ -1,59 +1,11 @@
-import React, { Suspense } from 'react';
-import { Canvas } from 'react-three-fiber';
+import * as THREE from 'three';
+import React, { useMemo, Suspense, useState, useRef } from 'react';
+import { Canvas, useLoader, useUpdate } from 'react-three-fiber';
 import { softShadows, OrbitControls, useGLTFLoader } from 'drei';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { draco } from "drei";
 
-
-softShadows();
-
-const SurfModel = () => {
-    const gltf = useGLTFLoader('/surf.gltf', true);
-    return (
-        <mesh>
-            <primitive object={gltf.scene} dispose={null} />
-        </mesh>
-    );
-};
-
-
-const Lights = () => {
-    return (
-        <>
-            {/* Ambient Light illuminates lights for all objects */}
-            <ambientLight intensity={0.3} />
-            {/* Diretion light */}
-            <directionalLight position={[10, 10, 5]} intensity={1} />
-            <directionalLight
-                castShadow
-                position={[0, 10, 0]}
-                intensity={1.5}
-                shadow-mapSize-width={1024}
-                shadow-mapSize-height={1024}
-                shadow-camera-far={50}
-                shadow-camera-left={-10}
-                shadow-camera-right={10}
-                shadow-camera-top={10}
-                shadow-camera-bottom={-10}
-            />
-            {/* Spotlight Large overhead light */}
-            <spotLight intensity={1} position={[1000, 0, 0]} castShadow />
-        </>
-    );
-};
-
-
-function Surf() {
-    return (
-        <>
-            <Canvas colorManagement shadowMap camera={{ position: [-5, 2, 0], fov: 60 }}>
-                <Lights />
-                <Suspense fallback={null}>
-                    <SurfModel />
-                </Suspense>
-                <OrbitControls enablePan={false} />
-            </Canvas>
-        </>
-    )
-}
 
 
 const surfGltgData = {
@@ -765,6 +717,87 @@ const surfGltgData = {
             ]
         }
     ]
+};
+
+const bufferData = () => {
+    return new Promise(async (resolve, reject) => {
+        let gltfModel;
+        const loadedObj = new GLTFLoader();
+        try {
+            loadedObj.parse(JSON.stringify(surfGltgData), '', (gltf) => resolve(gltf), true);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+
+async function Duck() {
+    let gltfModel = await bufferData();
+    console.log('Duck data below');
+    console.log(gltfModel);
+    return (
+        <mesh>
+            <primitive object={gltfModel.scene} dispose={null} />
+        </mesh>
+    )
+};
+
+
+const SurfModel = () => {
+    const gltf = useGLTFLoader("/surf.gltf", true);
+    console.log('Surfmodel data below');
+    console.log(gltf);
+    return (
+        <mesh>
+            <primitive object={gltf.scene} dispose={null} />
+        </mesh>
+    );
+};
+
+
+
+
+softShadows();
+
+
+const Lights = () => {
+    return (
+        <>
+            <ambientLight intensity={0.3} />
+            <directionalLight position={[10, 10, 5]} intensity={1} />
+            <directionalLight
+                castShadow
+                position={[0, 10, 0]}
+                intensity={1.5}
+                shadow-mapSize-width={1024}
+                shadow-mapSize-height={1024}
+                shadow-camera-far={50}
+                shadow-camera-left={-10}
+                shadow-camera-right={10}
+                shadow-camera-top={10}
+                shadow-camera-bottom={-10}
+            />
+            {/* Spotlight Large overhead light */}
+            <spotLight intensity={1} position={[1000, 0, 0]} castShadow />
+        </>
+    );
+};
+
+function Surf() {
+    return (
+        <div className="canvas">
+            <Canvas colorManagement shadowMap camera={{ position: [-5, 2, 0], fov: 60 }}>
+                <Lights />
+                <Suspense fallback={null}>
+                    <SurfModel />
+                    {/*<SurfModel />*/}
+                    {/*<Duck />*/}
+                </Suspense>
+                <OrbitControls enablePan={false} />
+            </Canvas>
+        </div>
+    )
 }
 
 export default Surf;
