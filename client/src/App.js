@@ -1,17 +1,20 @@
-import React, { Component } from "react";
+import React, {Suspense, Component } from "react";
 import BuildSliders from './components/BuildSliders';
-import Surf from './components/Surf';
+import SurfsCollection from './components/SurfsCollection';
+
 import './App.css';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <Surf/>
-        <BuildSliders/>
+        <Suspense fallback={null}>
+          <SurfsCollection />
+        </Suspense>
+        <BuildSliders />
       </div>
     )
-  } 
+  }
 }
 
 

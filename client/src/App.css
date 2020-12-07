@@ -23,7 +23,7 @@ body, #root, root, html .App{
 
 .sliders {
   position: relative;
-  top: 0px;
-  left: 0px;
+  top: 50%;
+  left: 70%;
 }
 
