@@ -13,11 +13,11 @@ class Slider extends Component {
     }
 
     componentDidMount() {
-        console.log(this.state);
+        //console.log(this.state);
     }
 
     componentWillUnmount() {
-        console.log(this.state);
+        //console.log(this.state);
     }
 
     render() {

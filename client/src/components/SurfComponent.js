@@ -1,7 +1,11 @@
 import * as THREE from 'three';
 import { useAsset } from 'use-asset';
-import React, { Suspense } from 'react';
+import React, { useMemo, useState } from 'react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { useSpring, animated } from 'react-spring/three';
+import { useEffect } from 'react';
+
+// use State will be fullfilled by buffer data
 
 const bufferData = {
     "accessors": [
@@ -714,31 +718,56 @@ const bufferData = {
     ]
 };
 
-const SurfComponent = (props) => {
+const SurfComponent = ({ position }) => {
+    // const mesh = useRef(null);
+    // useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.00));
+
     const buffer = JSON.stringify(bufferData);
-    const { scene } = useAsset((buffer) => new Promise((res, rej) => new GLTFLoader().parse(buffer, '', res, rej)), [buffer])
+    const { node, scene } = useAsset((buffer) => new Promise((res, rej) => new GLTFLoader().parse(buffer, '', res, rej)), [buffer]);
     scene.traverse((object) => {
-        if (object.isMesh) object.material = new THREE.MeshPhongMaterial({
-            color: 0x2194ce,
-            shininess: 1,
-            wireframe: true,
-            emissive: 0x0,
-            envMaps: "reflection",
-            specular: 0xffffff,
-            combine: THREE.MultiplyOperation,
-            reflectivity: 1,
-            refractionRatio: 1
-        });
+        if (object.isMesh) {
+            object.castShadow = true;
+            object.receiveShadow = true;
+        }
+        if ( node instanceof THREE.Mesh ) { 
+            node.castShadow = true; 
+        }
     });
-    // const { nodes, materials } = useGraph(scene)
+
+    const sceneCopy = useMemo(() => {
+        return scene?.clone(true);
+    }, [scene]);
+
+    //const [active, setActive] = useState(false);
+    const [initialize, setInitialize] = useState(false);
+
+    const { color, pos, ...props } = useSpring({
+        color: initialize ? 'hotpink' : 'white',
+        //pos: initialize ? [0, 0, 2] : [0, 0, 0],
+        scale: initialize ? [1.5, 1.5, 1.5] : [1, 1, 1],
+        rotation: initialize ? [0, THREE.Math.degToRad(360), THREE.Math.degToRad(0)] : [0, 0, 0],
+        config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 }
+    });
+
+    useEffect(() => {
+        let timeout;
+        const toggleInitialization = () => {
+            timeout = setTimeout(() => {
+                setInitialize(Number(!initialize));
+                toggleInitialization();
+            }, Math.random() * 2000 + 1000);
+        };
+        toggleInitialization();
+        return () => {
+            clearTimeout(timeout);
+        };
+
+    }, []);
+
     return (
-        <>
-            <Suspense fallback={null}>
-                <mesh {...props}>
-                    <primitive object={scene} dispose={null} />
-                </mesh>
-            </Suspense>
-        </>
+        <animated.mesh  position={position} {...props} >
+                <primitive object={sceneCopy} dispose={null} />
+        </animated.mesh>
     )
 }
 

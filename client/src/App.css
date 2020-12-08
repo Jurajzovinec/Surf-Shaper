@@ -13,6 +13,13 @@ body, #root, root, html .App{
   height: 100%;
 }
 
+.shift-buttons {
+  position: relative;
+  top:20%;
+  left:50%;
+  overflow: visible;
+}
+
 .canvas {
   width: 100%;
   height: 100%;
@@ -26,4 +33,6 @@ body, #root, root, html .App{
   top: 50%;
   left: 70%;
 }
+
+
 
