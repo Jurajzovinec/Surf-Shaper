@@ -2,7 +2,6 @@ import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from 'react-three-fiber';
 import { softShadows, OrbitControls, Html } from 'drei';
 import SurfComponent from './SurfComponent';
-
 import { useRef } from 'react';
 import { useFrame } from 'react-three-fiber';
 import { useSpring, animated } from 'react-spring/three';
@@ -34,40 +33,44 @@ const Lights = () => {
 softShadows();
 
 const SurfsCollection = (props) => {
-    console.log('Props positions are', props.positions);
-    const [shift, setShifted] = useState(false);
-    const [firstPos, setFirstPos] = useState(()=>{
-        console.log('collectionInit');
-        return [[0,0,0], props.positions[0]];
-    });
     
-      
-    //const [secondPos, setSecondPos] = useState([0,0,0], props.positions[1]);
-    //const [thirdPos, setThirdPos] = useState([0,0,0], props.positions[2]);
-    function lookForUndefined(array) { array.every((val)=> val!==undefined); } 
+    const [firstSurfPos, setFirstSurfPos] = useState(() => {
+        return [props.positions[0]];
+    });
 
-    useEffect(() => {
-        console.log('Use effect runs...');
-        console.log(firstPos);
-        lookForUndefined(firstPos) ? setFirstPos(prevPosition =>  [props.positions[0], prevPosition[0]]) : console.log('Some of the values is undefined.');
-        //setFirstPos(prevPosition =>  [props.positions[0], prevPosition[0]]);
-        //setSecondPos(props.positions[1]);
-        //setThirdPos(props.positions[2]);
-        return () => {
-            console.log('return from resourse set');
-        }
-    }, [props.positions[0], props.positions[1], props.positions[2]]);
+    const [secondSurfPos, setSecondPos] = useState(() => {
+        return [props.positions[1]];
+    });
 
-    console.log('first position is', firstPos);
+    const [thirdSurfPos, setThirdPos] = useState(() => {
+        return [props.positions[2]];
+    });
 
+    const [shiftSurfs, setShiftSurfs] = useState(false);
 
+    const { posSurfOne, posSurfTwo, posSurfThree, color, scale,  ...properties } = useSpring({
+        posSurfOne: shiftSurfs ? firstSurfPos[1] : firstSurfPos[0],
+        posSurfTwo: shiftSurfs ? secondSurfPos[1] : secondSurfPos[0],
+        posSurfThree: shiftSurfs ? thirdSurfPos[1] : thirdSurfPos[0],
+        config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 }
+    });
+
+    useEffect(()=>{
+        setShiftSurfs(true);
+        setFirstSurfPos((prevPos) => [props.positions[0], prevPos[0]]);
+        setSecondPos((prevPos) => [props.positions[1], prevPos[0]]);
+        setThirdPos((prevPos) => [props.positions[2], prevPos[0]]);
+        setShiftSurfs(false);
+    }, [props])
+        
     return (
         <div className="canvas">
             <Canvas colorManagement shadowMap camera={{ position: [0, 2, 10], fov: 60 }}>
                 <Lights />
                 <Suspense fallback={null}>
-                    <SurfComponent position={props.positions[2]} />
-                    <SurfComponent position={props.positions[1]} />
+                    <SurfComponent position={posSurfOne} />
+                    <SurfComponent position={posSurfTwo}  />
+                    <SurfComponent position={posSurfThree}  />
                 </Suspense>
                 <OrbitControls enablePan={false} target={[0, 1, 0]} />
             </Canvas>
