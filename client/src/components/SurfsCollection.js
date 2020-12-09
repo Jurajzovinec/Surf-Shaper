@@ -4,7 +4,7 @@ import { softShadows, OrbitControls, Html } from 'drei';
 import SurfComponent from './SurfComponent';
 import { useRef } from 'react';
 import { useFrame } from 'react-three-fiber';
-import { useSpring, animated } from 'react-spring/three';
+import { useSpring } from 'react-spring/three';
 
 const Lights = () => {
     return (

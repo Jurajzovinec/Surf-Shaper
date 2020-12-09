@@ -5,8 +5,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useSpring, animated } from 'react-spring/three';
 import { useEffect } from 'react';
 
-// use State will be fullfilled by buffer data
-
 const bufferData = {
     "accessors": [
         {
@@ -719,8 +717,6 @@ const bufferData = {
 };
 
 const SurfComponent = ({ position }) => {
-    // const mesh = useRef(null);
-    // useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.00));
 
     const buffer = JSON.stringify(bufferData);
     const { node, scene } = useAsset((buffer) => new Promise((res, rej) => new GLTFLoader().parse(buffer, '', res, rej)), [buffer]);
@@ -738,12 +734,10 @@ const SurfComponent = ({ position }) => {
         return scene?.clone(true);
     }, [scene]);
 
-    //const [active, setActive] = useState(false);
     const [initialize, setInitialize] = useState(false);
 
     const { color, pos, ...props } = useSpring({
         color: initialize ? 'hotpink' : 'white',
-        //pos: initialize ? [0, 0, 2] : [0, 0, 0],
         scale: initialize ? [1.5, 1.5, 1.5] : [1, 1, 1],
         rotation: initialize ? [0, THREE.Math.degToRad(360), THREE.Math.degToRad(0)] : [0, 0, 0],
         config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 }
@@ -761,7 +755,6 @@ const SurfComponent = ({ position }) => {
         return () => {
             clearTimeout(timeout);
         };
-
     }, []);
 
     return (

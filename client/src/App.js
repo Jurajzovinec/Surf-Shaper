@@ -6,40 +6,91 @@ import './App.css';
 
 
 class App extends Component {
+
   constructor() {
     super();
     this.state = {
-      positions: [[0, 1, 0], [-1, 1, 2], [2, 1, 1]]
+      positions: [[0, 1, 0], [1, 1, -1], [-1, 1, -1]],
+      surfsCollection: [
+        { surf: "surfOne", position: [] },
+        { surf: "surfTwo", position: [] },
+        { surf: "surfThree", position: [] }
+      ],
+      sliderValues: [
+        { surf: "surfOne", sliderValues: [] },
+        { surf: "surfTwo", sliderValues: [] },
+        { surf: "surfThree", sliderValues: [] }
+      ],
+      activeSurf: {
+        surf: "",
+        sliderValues: []
+      }
     };
+    this.getParametersForSliders = this.getParametersForSliders.bind(this);
     this.changePositions = this.changePositions.bind(this);
     this.getThisState = this.getThisState.bind(this);
+    this.setActiveSurf = this.setActiveSurf.bind(this);
   }
 
   componentDidMount() {
-    //this.setState({ positions: [[0, 1, 0], [-1, 1, 2], [2, 1, 1]] });
-    //console.log('PositionsOnMount');
-    //this.state.positions.forEach(element => console.log(element));
+    this.getParametersForSliders();
+    // this.setActiveSurf();
   }
 
-  getThisState(){
-    console.log('Get his state');
-    this.state.positions.forEach(element => console.log(element));
+  setActiveSurf() {
+    const isFrontPositionSurf = (surfPosition) => surfPosition.position.toString() === [0, 1, 0].toString();
+    const isFrontPositionParams = (sliderValue) => sliderValue.surf === this.state.activeSurf.surf;
+
+    let activeSurf = this.state.surfsCollection.find(isFrontPositionSurf);
+    this.setState({ activeSurf: { surf: activeSurf.surf } },
+      () => {
+        let activeBuildValues = this.state.sliderValues.find(isFrontPositionParams);
+        this.setState({ activeSurf: { surf: activeSurf.surf, sliderValues: activeBuildValues.sliderValues } },
+          () => console.log(this.state.activeSurf));
+      }
+    );
+  }
+
+  getThisState() {
     return this.state;
   }
 
   changePositions(newPositions) {
 
-    // console.log('Previous position');
-    // this.state.positions.forEach(element => console.log(element));
+    this.setState({
+      positions: newPositions,
+      surfsCollection: [
+        { surf: "surfOne", position: newPositions[0] },
+        { surf: "surfTwo", position: newPositions[1] },
+        { surf: "surfThree", position: newPositions[2] }
+      ],
+    }, () => this.setActiveSurf());
+  }
+  
 
-    //console.log('New position is');
-    //newPositions.forEach(element => console.log(element));
+  changeSliderValues({ valuesToChange }) {
 
-    this.setState({ positions: newPositions });
-    
-    //console.log('Updated');
-    //this.state.positions.forEach(element => console.log(element));
-    this.forceUpdate();
+  }
+
+  getParametersForSliders() {
+    // this.mounted = true;
+    const headers = {
+      "Content-Type": "multipart/form-data",
+      Accept: "application/json",
+    };
+    fetch("http://localhost:5000/configparams", headers)
+      .then(response => response.json())
+      .then(dimensionList => {
+        // this.mounted ? (this.setState({ dimensions: dimensionList })) : console.log('not mounted');
+        this.setState({
+          sliderValues: [
+            { surf: "surfOne", sliderValues: dimensionList },
+            { surf: "surfTwo", sliderValues: dimensionList },
+            { surf: "surfThree", sliderValues: dimensionList }
+          ]
+        }, () => console.log(this.state.sliderValues));
+      });
+
   }
 
   render() {
@@ -47,13 +98,10 @@ class App extends Component {
       <div className="App">
         <SurfsCollection positions={this.state.positions} />
         <ShiftButtons changePositions={this.changePositions} getThisState={this.getThisState} />
-        <BuildSliders />
+        <BuildSliders surf={this.state.activeSurf.surf} dimensions={this.state.activeSurf.sliderValues} />
       </div>
     )
   }
 }
 
-// 
-// <ShiftButtons changePositions={this.changePositions}  />
-// defaultPositions={this.state.positions}
 export default App;

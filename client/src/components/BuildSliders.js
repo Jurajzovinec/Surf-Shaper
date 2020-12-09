@@ -5,35 +5,31 @@ class BuildSliders extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dimensions: []
+            dimensions: props.dimensions
         };
+        this.changeCurrentValueInDimensionList = this.changeCurrentValueInDimensionList.bind(this);
     }
 
-    componentDidMount() {
-        this.mounted = true;
-        const headers = {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
-        };
-        fetch("http://localhost:5000/configparams", headers)
-            .then(response => response.json())
-            .then(dimensionList => {
-                if (this.mounted) {
-                    this.setState({ dimensions: dimensionList });
-                }
-            });
+    componentDidUpdate(){
+        // this.setState({dimensions: this.props.dimensions});
+        console.log(this.props);
+        console.log(this.state);
     }
 
-    componentWillUnmount() {
-        this.mounted = false;
-        this.setState({ dimensions: [] });
+    changeCurrentValueInDimensionList(name, currentValue) {
+        console.log("Caf ty primitif");
     }
 
     render() {
         return (
             <div className="sliders">
                 {this.state.dimensions.map((dimension) => {
-                    return <Slider key={dimension.name} min={dimension.minValue.toString()} max={dimension.maxValue.toString()} curValue={dimension.defValue.toString()} />
+                    return <Slider
+                        key={dimension.name}
+                        min={dimension.minValue.toString()}
+                        max={dimension.maxValue.toString()}
+                        curValue={dimension.defValue.toString()}
+                        />
                 })}
             </div>
         );
@@ -41,4 +37,5 @@ class BuildSliders extends Component {
 
 }
 
+// changeCurrentValueInDimensionList={this.changeCurrentValueInDimensionList} />
 export default BuildSliders;
