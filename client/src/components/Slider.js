@@ -9,34 +9,16 @@ class Slider extends Component {
 
     displayChange(e) {
         e.preventDefault();
-
-        //console.log('The state is below on slider');
-        ///console.log(this.state);
         e.target.parentElement.querySelector('span').textContent = e.target.value;
-        //this.state.values.min = 780;
-        //let tempArray = this.state.values;
-        //tempArray.curValue = e.target.value;
-        console.log('Printujem Temp Array');
-        //console.log(tempArray);
-        //this.setState({ values:{curValue: e.target.value} });
-        //this.setState({ values: { curValue: e.target.value } });
-        // this.props.changeCurrentValueInDimensionList(this.state.values.name, this.state.curValue);
-        //console.log('The  updated state is below on slider');
-        //console.log(this.state);
-    }
-
-    componentDidMount() {
-        //console.log('Props are following');
-        //console.log(this.state);
-    }
-
-    componentWillUnmount() {
-        //console.log(this.state);
+        this.props.renderSliders("surfOne", this.state.values.name, e.target.value);    
     }
 
     render() {
         return (
             <div>
+                <p className="slider-name">
+                    {this.state.values.name}
+                </p>
                 <input type="range"
                     min={this.state.values.min}
                     max={this.state.values.max}

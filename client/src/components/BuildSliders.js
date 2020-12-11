@@ -7,17 +7,13 @@ class BuildSliders extends Component {
         this.state = {
             dimensions: props.dimensions
         };
-        this.changeCurrentValueInDimensionList = this.changeCurrentValueInDimensionList.bind(this);
+        // this.props.renderSliders = this.props.renderSliders.bind(this);
     }
 
-    componentDidUpdate(){
-        // this.setState({dimensions: this.props.dimensions});
-        console.log(this.props);
-        console.log(this.state);
-    }
-
-    changeCurrentValueInDimensionList(name, currentValue) {
-        console.log("Caf ty primitif");
+    componentDidUpdate() {
+        if (this.state.dimensions.length === 0) {
+            this.setState({ dimensions: this.props.dimensions });
+        }
     }
 
     render() {
@@ -26,10 +22,12 @@ class BuildSliders extends Component {
                 {this.state.dimensions.map((dimension) => {
                     return <Slider
                         key={dimension.name}
+                        name={dimension.name}
                         min={dimension.minValue.toString()}
                         max={dimension.maxValue.toString()}
                         curValue={dimension.defValue.toString()}
-                        />
+                        renderSliders={this.props.renderSliders}
+                    />
                 })}
             </div>
         );
@@ -37,5 +35,4 @@ class BuildSliders extends Component {
 
 }
 
-// changeCurrentValueInDimensionList={this.changeCurrentValueInDimensionList} />
 export default BuildSliders;

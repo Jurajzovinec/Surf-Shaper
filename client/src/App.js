@@ -12,9 +12,9 @@ class App extends Component {
     this.state = {
       positions: [[0, 1, 0], [1, 1, -1], [-1, 1, -1]],
       surfsCollection: [
-        { surf: "surfOne", position: [] },
-        { surf: "surfTwo", position: [] },
-        { surf: "surfThree", position: [] }
+        { surf: "surfOne", position: [0, 1, 0] },
+        { surf: "surfTwo", position: [1, 1, -1] },
+        { surf: "surfThree", position: [-1, 1, -1] }
       ],
       sliderValues: [
         { surf: "surfOne", sliderValues: [] },
@@ -30,25 +30,29 @@ class App extends Component {
     this.changePositions = this.changePositions.bind(this);
     this.getThisState = this.getThisState.bind(this);
     this.setActiveSurf = this.setActiveSurf.bind(this);
+    this.renderSliders = this.renderSliders.bind(this);
+    this.setActiveSliderValues = this.setActiveSliderValues.bind(this);
   }
 
   componentDidMount() {
     this.getParametersForSliders();
-    // this.setActiveSurf();
   }
 
   setActiveSurf() {
-    const isFrontPositionSurf = (surfPosition) => surfPosition.position.toString() === [0, 1, 0].toString();
-    const isFrontPositionParams = (sliderValue) => sliderValue.surf === this.state.activeSurf.surf;
 
+    const isFrontPositionSurf = (surfPosition) => surfPosition.position.toString() === [0, 1, 0].toString();
     let activeSurf = this.state.surfsCollection.find(isFrontPositionSurf);
-    this.setState({ activeSurf: { surf: activeSurf.surf } },
-      () => {
-        let activeBuildValues = this.state.sliderValues.find(isFrontPositionParams);
-        this.setState({ activeSurf: { surf: activeSurf.surf, sliderValues: activeBuildValues.sliderValues } },
-          () => console.log(this.state.activeSurf));
-      }
+    this.setState({ activeSurf: { surf: activeSurf.surf, sliderValues: [] } },
+      () => this.setActiveSliderValues()
     );
+  }
+
+  setActiveSliderValues() {
+
+    const isFrontPositionParams = (sliderValue) => sliderValue.surf === this.state.activeSurf.surf;
+    let activeBuildValues = this.state.sliderValues.find(isFrontPositionParams);
+    let currentSurfState = this.state.activeSurf.surf;
+    this.setState({ activeSurf: { surf: currentSurfState, sliderValues: activeBuildValues.sliderValues } });
   }
 
   getThisState() {
@@ -66,14 +70,8 @@ class App extends Component {
       ],
     }, () => this.setActiveSurf());
   }
-  
-
-  changeSliderValues({ valuesToChange }) {
-
-  }
 
   getParametersForSliders() {
-    // this.mounted = true;
     const headers = {
       "Content-Type": "multipart/form-data",
       Accept: "application/json",
@@ -81,15 +79,31 @@ class App extends Component {
     fetch("http://localhost:5000/configparams", headers)
       .then(response => response.json())
       .then(dimensionList => {
-        // this.mounted ? (this.setState({ dimensions: dimensionList })) : console.log('not mounted');
         this.setState({
           sliderValues: [
             { surf: "surfOne", sliderValues: dimensionList },
             { surf: "surfTwo", sliderValues: dimensionList },
             { surf: "surfThree", sliderValues: dimensionList }
           ]
-        }, () => console.log(this.state.sliderValues));
+        }, () => {
+          console.log('Sliders loaded');
+          console.log(this.state.sliderValues);
+          this.setActiveSurf();
+        });
       });
+
+  }
+
+  renderSliders(surf, dimension, newValue) {
+
+    const selectChangingSurf = (sliderValues) => sliderValues.surf === surf;
+    const selectChangingDimension = (dimensions) => dimensions.name === dimension;
+
+    let tempArray = Object.assign([], this.state.sliderValues);
+    let updatedSurfCollection = tempArray.find(selectChangingSurf);
+    let updatedDimension = updatedSurfCollection.sliderValues.find(selectChangingDimension);
+    updatedDimension.defValue = newValue;
+    this.setState({ sliderValues: tempArray }, () => console.log(this.state.sliderValues));
 
   }
 
@@ -98,7 +112,7 @@ class App extends Component {
       <div className="App">
         <SurfsCollection positions={this.state.positions} />
         <ShiftButtons changePositions={this.changePositions} getThisState={this.getThisState} />
-        <BuildSliders surf={this.state.activeSurf.surf} dimensions={this.state.activeSurf.sliderValues} />
+        <BuildSliders surf={this.state.activeSurf.surf} dimensions={this.state.activeSurf.sliderValues} renderSliders={this.renderSliders} />
       </div>
     )
   }
