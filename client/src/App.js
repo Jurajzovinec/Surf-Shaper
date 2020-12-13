@@ -52,7 +52,8 @@ class App extends Component {
     const isFrontPositionParams = (sliderValue) => sliderValue.surf === this.state.activeSurf.surf;
     let activeBuildValues = this.state.sliderValues.find(isFrontPositionParams);
     let currentSurfState = this.state.activeSurf.surf;
-    this.setState({ activeSurf: { surf: currentSurfState, sliderValues: activeBuildValues.sliderValues } });
+    this.setState({ activeSurf: { surf: currentSurfState, sliderValues: activeBuildValues.sliderValues } },
+      () => console.log(this.state.activeSurf));
   }
 
   getThisState() {
@@ -96,14 +97,35 @@ class App extends Component {
 
   renderSliders(surf, dimension, newValue) {
 
-    const selectChangingSurf = (sliderValues) => sliderValues.surf === surf;
+    //console.log('Active is....');
+    //console.log(this.state.activeSurf);
+    const selectChangingSurf = (sliderValues) => sliderValues.surf === this.state.activeSurf.surf;
     const selectChangingDimension = (dimensions) => dimensions.name === dimension;
 
-    let tempArray = Object.assign([], this.state.sliderValues);
+    // Shallow copy methods
+    //let tempArray = Object.create([], this.state.sliderValues);
+    // let tempArray = Array.from(this.state.sliderValues);
+
+    // Deep copy
+    let tempArray = JSON.parse(JSON.stringify(this.state.sliderValues));
+
+    // console.log(tempArray);
     let updatedSurfCollection = tempArray.find(selectChangingSurf);
+    
+    // console.log('updated Collection');
+    // console.log(updatedSurfCollection);
+    
     let updatedDimension = updatedSurfCollection.sliderValues.find(selectChangingDimension);
+    // console.log('Updated dimension is....');
+    // console.log(updatedDimension);
     updatedDimension.defValue = newValue;
-    this.setState({ sliderValues: tempArray }, () => console.log(this.state.sliderValues));
+
+    // console.log('ActiveSurf is....');
+    // console.log(this.state.activeSurf);
+    // console.log('Global Slider Values are....');    
+    // console.log(this.state.sliderValues);
+    this.setState({ sliderValues: tempArray });
+    // 
 
   }
 
