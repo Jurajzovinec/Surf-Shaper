@@ -10,14 +10,14 @@ class Slider extends Component {
 
     displayChange(e) {
         e.preventDefault();
-        e.target.parentElement.querySelector('span').textContent = e.target.value;
         let tempArray = JSON.parse(JSON.stringify(this.state.values));
         tempArray.curValue = e.target.value;
         this.setState({ values: tempArray }, () => this.renderSlider(parseFloat(e.target.value)));
     }
 
     renderSlider(newValue) {
-        this.props.renderSliders(this.state.values.correspondingSurf, this.state.values.name, newValue);
+        // console.log('New value on slider', newValue);
+        this.props.renderSliders(this.state.values.name, newValue);
     }
 
     render() {
@@ -35,7 +35,7 @@ class Slider extends Component {
                     step={1}
                     onChange={this.displayChange}>
                 </input>
-                <span></span>
+                <span className="actual-state-slider">{this.state.values.curValue}</span>
             </div>
         )
     }

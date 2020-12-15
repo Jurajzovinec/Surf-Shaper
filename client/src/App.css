@@ -34,5 +34,11 @@ body, #root, root, html .App{
   left: 70%;
 }
 
+.update-config-button {
+  position: relative;
+  top: 20%;
+  left: 70%;
+}
+
 
 

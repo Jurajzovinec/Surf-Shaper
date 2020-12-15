@@ -26,10 +26,22 @@ app.get('/updateparameter', (req, res) => {
         .then(res.send('Hello World Extreme'));
 });
 
-app.get('/retrievemodel', (req, res) => {
+app.get('/retrievemodel/:paramstoupdate', (req, res) => {
+    let newConfigParameters = JSON.parse(req.params.paramstoupdate);
+
+    console.log(newConfigParameters);
+
+    onshape.configureAndTranslate(newConfigParameters)
+        .then(gltfModelData => res.send(gltfModelData))
+        .catch(error => console.log(error));
+
+});
+
+app.get('/defaultmodel', (req, res) => {
     onshape.fullTranslation()
         .then(gltfModelData => res.send(gltfModelData))
-})
+        .catch(error => { res.send(error); console.log(error); });
+});
 
 app.listen(5000, () => console.log("Express Running on Port 5000, server"));
 

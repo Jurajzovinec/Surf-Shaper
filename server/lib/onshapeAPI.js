@@ -206,33 +206,36 @@ const updateConfiguration = function (updatedConfiguration) {
 };
 
 // newDimension manipulation 
-const changeParameter = function (recievedConfiguration, parameterName, newDimension) {
+const changeParameter = function (recievedConfiguration, newConfigurationObject) {
     console.log("...changingParameter...");
+    //console.log(newConfigurationObject);
     return new Promise(async (resolve, reject) => {
-        recievedConfiguration.configurationParameters.forEach(element => {
-            if (element.message.parameterName === parameterName) {
-                if (newDimension < element.message.rangeAndDefault.message.minValue) {
-                    element.message.rangeAndDefault.message.defaultValue = element.message.rangeAndDefault.message.minValue;
-                } else if (newDimension > element.message.rangeAndDefault.message.maxValue) {
-                    element.message.rangeAndDefault.message.defaultValue = element.message.rangeAndDefault.message.maxValue;
-                } else {
-                    element.message.rangeAndDefault.message.defaultValue = newDimension;
+        newConfigurationObject.forEach((configParam)=>{
+            recievedConfiguration.configurationParameters.forEach(element => {
+                if (element.message.parameterName === configParam.name) {
+                    if (configParam.defValue < element.message.rangeAndDefault.message.minValue) {
+                        element.message.rangeAndDefault.message.defaultValue = element.message.rangeAndDefault.message.minValue;
+                    } else if (configParam.defValue > element.message.rangeAndDefault.message.maxValue) {
+                        element.message.rangeAndDefault.message.defaultValue = element.message.rangeAndDefault.message.maxValue;
+                    } else {
+                        element.message.rangeAndDefault.message.defaultValue = configParam.defValue;
+                    }
                 }
-            }
+            });
         });
         resolve(recievedConfiguration);
     });
 };
 
-const configureAndTranslate = function (parameterName, newDimension) {
+const configureAndTranslate = function (newConfigurationObject) {
     return new Promise(async (resolve, reject) => {
         getConfiguration()
-            .then(recievedConfiguration => changeParameter(recievedConfiguration, parameterName, newDimension))
+            .then(recievedConfiguration => changeParameter(recievedConfiguration, newConfigurationObject))
             .then(updatedConfiguration => updateConfiguration(updatedConfiguration))
             .then(updatedConfiguration => gltfTranslation(updatedConfiguration))
             .then(tid => getTranslationStatus(tid))
             .then(resDict => getExternalData(resDict.documentId, resDict.resultExternalDataIds))
-            .then(chunkSavedMssg => resolve(console.log(chunkSavedMssg)))
+            .then(chunkSavedMssg => resolve(chunkSavedMssg))
             .catch(error => reject(error));
     });
 };

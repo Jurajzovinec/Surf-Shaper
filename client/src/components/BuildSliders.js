@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Slider from './Slider';
-import RcSlider from './RcSlider';
 
 class BuildSliders extends Component {
     constructor(props) {
@@ -29,10 +28,6 @@ class BuildSliders extends Component {
                         correspondingSurf={this.props.surf}
                     />
                 })}
-                <p>{this.state.surf}</p>
-                <p>{this.props.surf}</p>
-                <RcSlider/>
-
             </div>
         );
     }

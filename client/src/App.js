@@ -1,7 +1,8 @@
-import React, { Suspense, Component } from "react";
+import React, { Component } from "react";
 import BuildSliders from './components/BuildSliders';
 import SurfsCollection from './components/SurfsCollection';
 import ShiftButtons from "./components/ShiftButtons";
+import UpdateButton from "./components/UpdateCurrentConfigButton";
 import './App.css';
 
 
@@ -24,7 +25,12 @@ class App extends Component {
       activeSurf: {
         surf: "",
         sliderValues: []
-      }
+      },
+      gltfData: [
+        { surf: "surfOne", data3D: undefined },
+        { surf: "surfTwo", data3D: undefined },
+        { surf: "surfThree", data3D: undefined }
+      ]
     };
     this.getParametersForSliders = this.getParametersForSliders.bind(this);
     this.changePositions = this.changePositions.bind(this);
@@ -32,10 +38,13 @@ class App extends Component {
     this.setActiveSurf = this.setActiveSurf.bind(this);
     this.renderSliders = this.renderSliders.bind(this);
     this.setActiveSliderValues = this.setActiveSliderValues.bind(this);
+    this.getDefaultGltfData = this.getDefaultGltfData.bind(this);
+    this.updateGltf = this.updateGltf.bind(this);
   }
 
   componentDidMount() {
     this.getParametersForSliders();
+    this.getDefaultGltfData();
   }
 
   setActiveSurf() {
@@ -52,8 +61,7 @@ class App extends Component {
     const isFrontPositionParams = (sliderValue) => sliderValue.surf === this.state.activeSurf.surf;
     let activeBuildValues = this.state.sliderValues.find(isFrontPositionParams);
     let currentSurfState = this.state.activeSurf.surf;
-    this.setState({ activeSurf: { surf: currentSurfState, sliderValues: activeBuildValues.sliderValues } },
-      () => console.log(this.state.activeSurf));
+    this.setState({ activeSurf: { surf: currentSurfState, sliderValues: activeBuildValues.sliderValues } });
   }
 
   getThisState() {
@@ -72,6 +80,40 @@ class App extends Component {
     }, () => this.setActiveSurf());
   }
 
+  getDefaultGltfData() {
+    const headers = {
+      "Content-Type": "multipart/form-data",
+      Accept: "application/json",
+    };
+    fetch("http://localhost:5000/defaultmodel", headers)
+      .then(response => response.json())
+      .then(defaultGltfData => {
+        this.setState({
+          gltfData: [
+            { surf: "surfOne", data3D: defaultGltfData },
+            { surf: "surfTwo", data3D: defaultGltfData },
+            { surf: "surfThree", data3D: defaultGltfData }
+          ]
+        }, () => {
+          console.log('Gltf Data Received loaded');
+          console.log(this.state.gltfData);
+        });
+      });
+
+  }
+
+  renderSliders(dimension, newValue) {
+
+    const selectChangingSurf = (sliderValues) => sliderValues.surf === this.state.activeSurf.surf;
+    const selectChangingDimension = (dimensions) => dimensions.name === dimension;
+    let tempArray = JSON.parse(JSON.stringify(this.state.sliderValues));
+    let updatedSurfCollection = tempArray.find(selectChangingSurf);
+    let updatedDimension = updatedSurfCollection.sliderValues.find(selectChangingDimension);
+    updatedDimension.defValue = newValue;
+    this.setState({ sliderValues: tempArray }, () => this.setActiveSliderValues());
+
+  }
+
   getParametersForSliders() {
     const headers = {
       "Content-Type": "multipart/form-data",
@@ -87,54 +129,30 @@ class App extends Component {
             { surf: "surfThree", sliderValues: dimensionList }
           ]
         }, () => {
-          console.log('Sliders loaded');
-          console.log(this.state.sliderValues);
           this.setActiveSurf();
+
         });
       });
-
   }
 
-  renderSliders(surf, dimension, newValue) {
+  updateGltf(activeSurf, gltfData) {
 
-    //console.log('Active is....');
-    //console.log(this.state.activeSurf);
-    const selectChangingSurf = (sliderValues) => sliderValues.surf === this.state.activeSurf.surf;
-    const selectChangingDimension = (dimensions) => dimensions.name === dimension;
+    const selectChangingSurf = (gltfDataDict) => gltfDataDict.surf === activeSurf;
 
-    // Shallow copy methods
-    //let tempArray = Object.create([], this.state.sliderValues);
-    // let tempArray = Array.from(this.state.sliderValues);
-
-    // Deep copy
-    let tempArray = JSON.parse(JSON.stringify(this.state.sliderValues));
-
-    // console.log(tempArray);
-    let updatedSurfCollection = tempArray.find(selectChangingSurf);
-    
-    // console.log('updated Collection');
-    // console.log(updatedSurfCollection);
-    
-    let updatedDimension = updatedSurfCollection.sliderValues.find(selectChangingDimension);
-    // console.log('Updated dimension is....');
-    // console.log(updatedDimension);
-    updatedDimension.defValue = newValue;
-
-    // console.log('ActiveSurf is....');
-    // console.log(this.state.activeSurf);
-    // console.log('Global Slider Values are....');    
-    // console.log(this.state.sliderValues);
-    this.setState({ sliderValues: tempArray });
-    // 
+    let tempArray = JSON.parse(JSON.stringify(this.state.gltfData));
+    let updatedGltfData = tempArray.find(selectChangingSurf);
+    updatedGltfData.data3D = gltfData;
+    this.setState({ gltfData: tempArray });
 
   }
 
   render() {
     return (
       <div className="App">
-        <SurfsCollection positions={this.state.positions} />
+        <SurfsCollection positions={this.state.positions} gltfData={this.state.gltfData} />
         <ShiftButtons changePositions={this.changePositions} getThisState={this.getThisState} />
         <BuildSliders surf={this.state.activeSurf.surf} dimensions={this.state.activeSurf.sliderValues} renderSliders={this.renderSliders} />
+        <UpdateButton configparams={this.state.activeSurf} updateGltf={this.updateGltf} />
       </div>
     )
   }

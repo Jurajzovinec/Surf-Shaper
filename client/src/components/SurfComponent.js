@@ -716,19 +716,19 @@ const bufferData = {
     ]
 };
 
-const SurfComponent = ({ position }) => {
-
-    const buffer = JSON.stringify(bufferData);
-    const { node, scene } = useAsset((buffer) => new Promise((res, rej) => new GLTFLoader().parse(buffer, '', res, rej)), [buffer]);
-    scene.traverse((object) => {
-        if (object.isMesh) {
-            object.castShadow = true;
-            object.receiveShadow = true;
-        }
-        if ( node instanceof THREE.Mesh ) { 
-            node.castShadow = true; 
-        }
-    });
+const SurfComponent = ({ position, gltfData }) => {
+    //console.log(position);
+    //console.log(gltfData);
+    let buffer;
+    if(gltfData){
+        buffer = JSON.stringify(gltfData);
+        // console.log('Gltf Data received on SC.');
+        // console.log(gltfData);
+    } else {
+        buffer = JSON.stringify(bufferData);
+    }
+    const { scene } = useAsset((buffer) => new Promise((res, rej) => new GLTFLoader().parse(buffer, '', res, rej)), [buffer]);
+    
 
     const sceneCopy = useMemo(() => {
         return scene?.clone(true);
@@ -765,4 +765,3 @@ const SurfComponent = ({ position }) => {
 }
 
 export default SurfComponent;
-
