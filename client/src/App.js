@@ -152,7 +152,7 @@ class App extends Component {
         <SurfsCollection positions={this.state.positions} gltfData={this.state.gltfData} />
         <ShiftButtons changePositions={this.changePositions} getThisState={this.getThisState} />
         <BuildSliders surf={this.state.activeSurf.surf} dimensions={this.state.activeSurf.sliderValues} renderSliders={this.renderSliders} />
-        <UpdateButton configparams={this.state.activeSurf} updateGltf={this.updateGltf} />
+        <UpdateButton configparams={this.state.activeSurf} updateGltf={this.updateGltf} getThisState={this.getThisState} />
       </div>
     )
   }

@@ -40,5 +40,11 @@ body, #root, root, html .App{
   left: 70%;
 }
 
+.download-stl-button{
+  position: relative;
+  top: 17.5%;
+  left: 75%;
+}
+
 
 

@@ -16,6 +16,11 @@ app.get('/view', (req, res) => {
     res.sendFile(__dirname + '\\public\\view.html');
 });
 
+app.get('/stl', (req, res) => {
+    onshape.stlTranslation()
+        .then(reponse => res.send(reponse));
+});
+
 app.get('/configparams', (req, res) => {
     onshape.getConfigurationParams()
         .then(reponse => res.send(reponse));
@@ -28,13 +33,16 @@ app.get('/updateparameter', (req, res) => {
 
 app.get('/retrievemodel/:paramstoupdate', (req, res) => {
     let newConfigParameters = JSON.parse(req.params.paramstoupdate);
-
-    console.log(newConfigParameters);
-
     onshape.configureAndTranslate(newConfigParameters)
         .then(gltfModelData => res.send(gltfModelData))
         .catch(error => console.log(error));
+});
 
+app.get('/retrievemodelstl/:paramstoupdate', (req, res) => {
+    let newConfigParameters = JSON.parse(req.params.paramstoupdate);
+    onshape.configureAndTranslateSTL(newConfigParameters)
+        .then(gltfModelData => res.send(gltfModelData))
+        .catch(error => console.log(error));
 });
 
 app.get('/defaultmodel', (req, res) => {

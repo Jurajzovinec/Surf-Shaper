@@ -1,6 +1,9 @@
 const fetch = require('node-fetch');
 const crypto = require('crypto');
 const fs = require('fs');
+const url = require('url');
+const querystring = require('querystring');
+const https = require('https');
 
 const keys = {
     'baseUrl': 'https://cad.onshape.com',
@@ -41,23 +44,51 @@ const body = {
 };
 
 // Request Creation Functions
-const buildHeaders = function (method, url, stream) {
+const buildHeaders = function (method, path, stream, querystring) {
     let headers = {
         'Content-Type': 'application/json',
         'On-Nonce': crypto.randomBytes(25).toString('hex'),
         'Date': (new Date()).toUTCString(),
         'Accept': stream ? 'application/vnd.onshape.v1+octet-stream' : 'application/vnd.onshape.v1+json'
     };
-    const queryString = '';
-    let hmacString = (method + '\n' + headers['On-Nonce'] + '\n' + headers['Date'] + '\n' + headers['Content-Type'] + '\n' + url + '\n' + queryString + '\n').toLowerCase();
+    const queryString = querystring ? querystring : '';
+    const hmacString = (method + '\n' + headers['On-Nonce'] + '\n' + headers['Date'] + '\n' +
+      headers['Content-Type'] + '\n' + path + '\n' + queryString + '\n').toLowerCase();
     let hmac = crypto.createHmac('sha256', keys.secretKey);
     hmac.update(hmacString);
     let signature = hmac.digest('base64');
     const authorization = 'On ' + keys.accessKey + ':HmacSHA256:' + signature;
     headers['Authorization'] = authorization;
-    return (headers);
+    return headers;
 };
+var buildHeadersOriginal = function (method, path, queryString, inputHeaders) {
+    var headers = util.copyObject(inputHeaders);
+    // the Date header needs to be reasonably (5 minutes) close to the server time when the request is received
+    var authDate = (new Date()).toUTCString();
+    // the On-Nonce header is a random (unique) string that serves to identify the request
+    var onNonce = buildNonce();
+    if (!('Content-Type' in headers)) {
+      headers['Content-Type'] = 'application/json';
+    }
+    // the Authorization header needs to have this very particular format, which the server uses to validate the request
+    // the access key is provided for the server to retrieve the API key; the signature is encrypted with the secret key
+    var hmacString = (method + '\n' + onNonce + '\n' + authDate + '\n' +
+      headers['Content-Type'] + '\n' + path + '\n' + queryString + '\n').toLowerCase();
+    var hmac = crypto.createHmac('sha256', creds.secretKey);
+    hmac.update(hmacString);
+    var signature = hmac.digest('base64');
+    var asign = 'On ' + creds.accessKey + ':HmacSHA256:' + signature;
 
+    headers['On-Nonce'] = onNonce;
+    headers['Date'] = authDate;
+    headers['Authorization'] = asign;
+
+    if (!('Accept' in headers)) {
+      headers['Accept'] = 'application/vnd.onshape.v1+json';
+    }
+
+    return headers;
+  }
 // Translation Onshape API
 const gltfTranslation = function (updatedConfiguration) {
     console.log("...working on gltfTranslation...");
@@ -98,7 +129,7 @@ const getTranslationStatus = function (tid) {
             fetch(absoluteUrl, bodyToPassInFetch)
                 .then(res => res.json())
                 .then(res => {
-                    //console.log(res);
+                    console.log(res);
                     if (res.requestState === 'ACTIVE') {
                         newPromisTobeDone();
                     } else {
@@ -145,6 +176,55 @@ const fullTranslation = function () {
             .catch(err => reject(err));
     });
 };
+
+// Export to STL file
+const stlTranslation = function (updatedConfiguration) {
+    console.log('...gettingSTLData...');
+    const urlStl = "/api/partstudios/d/7d139508501735b4ddbdc6be/w/f38fdcfec24ecd8c4d57ca4f/e/040977ef479ed9114758fb02/stl";
+    //console.log(url);
+    let method = 'GET';
+    const absoluteUrl = "https://cad.onshape.com" + urlStl;
+    let headers = buildHeaders(method, urlStl, stream = true);
+    const bodyToPassInFetch = {
+        method: method,
+        headers: headers,
+        //cache: 'no-cache',
+        redirect: 'manual'
+    };
+
+    //console.log(headers);
+
+    return new Promise(async (resolve, reject) => {
+        fetch(absoluteUrl, bodyToPassInFetch)
+            .then(redirectedResponse => {
+                console.log("-----------------------------------");
+                console.log("-----------------X-----------------");
+                console.log("-----------------------------------");
+
+                const redirectParsedUrl = url.parse(redirectedResponse.headers.get('location'));
+                const redirectUrl = redirectedResponse.headers.get('location');
+                console.log(querystring.parse(redirectParsedUrl.query));
+                console.log(redirectParsedUrl.query);
+                console.log(redirectParsedUrl);
+                console.log(redirectUrl);
+                headers = buildHeaders(method, redirectParsedUrl.pathname, stream = true, (redirectParsedUrl.query));
+                let redirectedBodyToPassInFetch = {
+                    method: method,
+                    headers: headers,
+                    query: querystring.parse(redirectParsedUrl.query)
+                };
+                fetch(redirectParsedUrl.href, redirectedBodyToPassInFetch)
+                    .then((res) => console.log(res))
+                    .catch((error) => console.log(error));
+
+                /* fetch(redirectedResponse.headers.get('location'), redirectedBodyToPassInFetch)
+                    .then(response => { console.log(response); resolve(response); return response; }); */
+            })
+            //console.log(url.parse(redirectedResponse.headers.location));                
+            .then(res => resolve(res));
+    });
+};
+
 
 // Configuration Onshape API
 const getConfiguration = function () {
@@ -210,7 +290,7 @@ const changeParameter = function (recievedConfiguration, newConfigurationObject)
     console.log("...changingParameter...");
     //console.log(newConfigurationObject);
     return new Promise(async (resolve, reject) => {
-        newConfigurationObject.forEach((configParam)=>{
+        newConfigurationObject.forEach((configParam) => {
             recievedConfiguration.configurationParameters.forEach(element => {
                 if (element.message.parameterName === configParam.name) {
                     if (configParam.defValue < element.message.rangeAndDefault.message.minValue) {
@@ -258,4 +338,4 @@ const getDocumentation = function () {
 };
 
 
-module.exports = { configureAndTranslate, getConfigurationParams, fullTranslation };
+module.exports = { configureAndTranslate, getConfigurationParams, fullTranslation, stlTranslation };
