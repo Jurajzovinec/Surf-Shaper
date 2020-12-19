@@ -81,11 +81,8 @@ class App extends Component {
   }
 
   getDefaultGltfData() {
-    const headers = {
-      "Content-Type": "multipart/form-data",
-      Accept: "application/json",
-    };
-    fetch("http://localhost:5000/defaultmodel", headers)
+
+    fetch("http://localhost:5000/defaultmodel")
       .then(response => response.json())
       .then(defaultGltfData => {
         this.setState({
@@ -115,11 +112,8 @@ class App extends Component {
   }
 
   getParametersForSliders() {
-    const headers = {
-      "Content-Type": "multipart/form-data",
-      Accept: "application/json",
-    };
-    fetch("http://localhost:5000/configparams", headers)
+
+    fetch("http://localhost:5000/configparams")
       .then(response => response.json())
       .then(dimensionList => {
         this.setState({

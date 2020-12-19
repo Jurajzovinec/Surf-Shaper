@@ -16,7 +16,6 @@ class Slider extends Component {
     }
 
     renderSlider(newValue) {
-        // console.log('New value on slider', newValue);
         this.props.renderSliders(this.state.values.name, newValue);
     }
 

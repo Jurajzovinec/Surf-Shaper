@@ -123,7 +123,6 @@ const getTranslationStatus = function (tid) {
 const getExternalData = function (documentId, resultExternalDataIds) {
     console.log('...getingExternalData...');
     const url = "/api/documents/d/" + documentId + "/externaldata/" + resultExternalDataIds;
-    //console.log(url);
     const method = 'GET';
     const absoluteUrl = "https://cad.onshape.com" + url;
     const headers = buildHeaders(method, url, stream = true);
@@ -131,7 +130,6 @@ const getExternalData = function (documentId, resultExternalDataIds) {
         method: method,
         headers: headers
     };
-    fs.writeFile('public/surf.gltf', "", () => console.log('File Cleared!'));
     return new Promise(async (resolve, reject) => {
         fetch(absoluteUrl, bodyToPassInFetch)
             .then(res => resolve(res.text()))
@@ -150,7 +148,7 @@ const fullTranslation = function () {
 };
 
 // Export to STL file
-const stlTranslation = function () {
+const stlTranslation = function (updatedConfiguration) {
     console.log('...gettingSTLData...');
     const urlStl = "/api/partstudios/d/7d139508501735b4ddbdc6be/w/f38fdcfec24ecd8c4d57ca4f/e/040977ef479ed9114758fb02/stl";
     const method = 'GET';
@@ -164,7 +162,7 @@ const stlTranslation = function () {
     return new Promise(async (resolve, reject) => {
         fetch(absoluteUrl, bodyToPassInFetch)
             .then(redirectedResponse => redirectingSTLSource(redirectedResponse))
-            .then(res =>resolve(res.text()))
+            .then(res => resolve(res.text()))
             .catch((error) => reject(error));
     });
 };
@@ -181,11 +179,21 @@ const redirectingSTLSource = function (redirectedResponse) {
     };
     return new Promise(async (resolve, reject) => {
         fetch(redirectParsedUrl.href, redirectedBodyToPassInFetch)
-            .then((res) =>{  resolve(res)})
+            .then((res) => { resolve(res) })
             .catch((error) => reject(error));
     });
 };
 
+const configureAndTranslateSTL = function (newConfigurationObject) {
+    return new Promise(async (resolve, reject) => {
+        getConfiguration()
+            .then(recievedConfiguration => changeParameter(recievedConfiguration, newConfigurationObject))
+            .then(updatedConfiguration => updateConfiguration(updatedConfiguration))
+            .then(configureAndTranslateSTL => stlTranslation(configureAndTranslateSTL))
+            .then(stlData => resolve(stlData))
+            .catch(error => reject(error));
+    });
+};
 
 // Configuration Onshape API
 const getConfiguration = function () {
@@ -299,4 +307,4 @@ const getDocumentation = function () {
 };
 
 
-module.exports = { configureAndTranslate, getConfigurationParams, fullTranslation, stlTranslation };
+module.exports = { configureAndTranslate, getConfigurationParams, fullTranslation, configureAndTranslateSTL };

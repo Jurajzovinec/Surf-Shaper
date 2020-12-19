@@ -17,7 +17,7 @@ app.get('/view', (req, res) => {
 });
 
 app.get('/stl', (req, res) => {
-    onshape.stlTranslation()
+    onshape.configureAndTranslateSTL()
         .then(reponse => res.send(reponse));
 });
 
@@ -31,16 +31,16 @@ app.get('/updateparameter', (req, res) => {
         .then(res.send('Hello World Extreme'));
 });
 
-app.get('/retrievemodel/:paramstoupdate', (req, res) => {
-    let newConfigParameters = JSON.parse(req.params.paramstoupdate);
-    onshape.configureAndTranslate(newConfigParameters)
-        .then(gltfModelData => res.send(gltfModelData))
-        .catch(error => console.log(error));
-});
-
 app.get('/retrievemodelstl/:paramstoupdate', (req, res) => {
     let newConfigParameters = JSON.parse(req.params.paramstoupdate);
     onshape.configureAndTranslateSTL(newConfigParameters)
+        .then(stlModelData => res.send(stlModelData))
+        .catch(error => console.log(error));
+});
+
+app.get('/retrievemodel/:paramstoupdate', (req, res) => {
+    let newConfigParameters = JSON.parse(req.params.paramstoupdate);
+    onshape.configureAndTranslate(newConfigParameters)
         .then(gltfModelData => res.send(gltfModelData))
         .catch(error => console.log(error));
 });

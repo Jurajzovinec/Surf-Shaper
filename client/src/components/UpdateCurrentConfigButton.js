@@ -15,14 +15,9 @@ class UpdateButton extends Component {
     }
 
     sendConfiguration() {
-        //console.log(this.state.values);
         let requestParam = JSON.stringify(this.state.values);
 
-        const headers = {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
-        };
-        fetch(`http://localhost:5000/retrievemodel/${requestParam}`, headers)
+        fetch(`http://localhost:5000/retrievemodel/${requestParam}`)
             .then(response => response.json())
             .then(gltfData => this.props.updateGltf(this.state.activeSurf, gltfData))
             .catch(error => console.log(error));
@@ -30,16 +25,23 @@ class UpdateButton extends Component {
 
     downloadStlData() {
 
-
         let requestParam = JSON.stringify(this.state.values);
 
-        const headers = {
-            "Content-Type": "multipart/form-data",
-            Accept: "application/json",
+        const downloadStlFile = function(stlfData){
+            const blob = new Blob([stlfData], {type: 'text/stl'});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'SurfStl.stl');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         };
-        fetch(`http://localhost:5000/retrievemodelstl/${requestParam}`, headers)
-            .then(response => response.json())
-            //.then(gltfData => this.props.updateGltf(this.state.activeSurf, gltfData))
+
+        fetch(`http://localhost:5000/retrievemodelstl/${requestParam}`)
+            .then(response =>(response.text()))
+            .then(response => downloadStlFile(response))
             .catch(error => console.log(error));
 
      
