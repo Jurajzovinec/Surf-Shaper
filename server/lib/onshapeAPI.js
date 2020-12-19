@@ -3,7 +3,6 @@ const crypto = require('crypto');
 const fs = require('fs');
 const url = require('url');
 const querystring = require('querystring');
-const https = require('https');
 
 const keys = {
     'baseUrl': 'https://cad.onshape.com',
@@ -53,7 +52,7 @@ const buildHeaders = function (method, path, stream, querystring) {
     };
     const queryString = querystring ? querystring : '';
     const hmacString = (method + '\n' + headers['On-Nonce'] + '\n' + headers['Date'] + '\n' +
-      headers['Content-Type'] + '\n' + path + '\n' + queryString + '\n').toLowerCase();
+        headers['Content-Type'] + '\n' + path + '\n' + queryString + '\n').toLowerCase();
     let hmac = crypto.createHmac('sha256', keys.secretKey);
     hmac.update(hmacString);
     let signature = hmac.digest('base64');
@@ -61,34 +60,7 @@ const buildHeaders = function (method, path, stream, querystring) {
     headers['Authorization'] = authorization;
     return headers;
 };
-var buildHeadersOriginal = function (method, path, queryString, inputHeaders) {
-    var headers = util.copyObject(inputHeaders);
-    // the Date header needs to be reasonably (5 minutes) close to the server time when the request is received
-    var authDate = (new Date()).toUTCString();
-    // the On-Nonce header is a random (unique) string that serves to identify the request
-    var onNonce = buildNonce();
-    if (!('Content-Type' in headers)) {
-      headers['Content-Type'] = 'application/json';
-    }
-    // the Authorization header needs to have this very particular format, which the server uses to validate the request
-    // the access key is provided for the server to retrieve the API key; the signature is encrypted with the secret key
-    var hmacString = (method + '\n' + onNonce + '\n' + authDate + '\n' +
-      headers['Content-Type'] + '\n' + path + '\n' + queryString + '\n').toLowerCase();
-    var hmac = crypto.createHmac('sha256', creds.secretKey);
-    hmac.update(hmacString);
-    var signature = hmac.digest('base64');
-    var asign = 'On ' + creds.accessKey + ':HmacSHA256:' + signature;
 
-    headers['On-Nonce'] = onNonce;
-    headers['Date'] = authDate;
-    headers['Authorization'] = asign;
-
-    if (!('Accept' in headers)) {
-      headers['Accept'] = 'application/vnd.onshape.v1+json';
-    }
-
-    return headers;
-  }
 // Translation Onshape API
 const gltfTranslation = function (updatedConfiguration) {
     console.log("...working on gltfTranslation...");
@@ -178,50 +150,39 @@ const fullTranslation = function () {
 };
 
 // Export to STL file
-const stlTranslation = function (updatedConfiguration) {
+const stlTranslation = function () {
     console.log('...gettingSTLData...');
     const urlStl = "/api/partstudios/d/7d139508501735b4ddbdc6be/w/f38fdcfec24ecd8c4d57ca4f/e/040977ef479ed9114758fb02/stl";
-    //console.log(url);
-    let method = 'GET';
+    const method = 'GET';
     const absoluteUrl = "https://cad.onshape.com" + urlStl;
-    let headers = buildHeaders(method, urlStl, stream = true);
+    const headers = buildHeaders(method, urlStl, stream = true);
     const bodyToPassInFetch = {
         method: method,
         headers: headers,
-        //cache: 'no-cache',
         redirect: 'manual'
     };
-
-    //console.log(headers);
-
     return new Promise(async (resolve, reject) => {
         fetch(absoluteUrl, bodyToPassInFetch)
-            .then(redirectedResponse => {
-                console.log("-----------------------------------");
-                console.log("-----------------X-----------------");
-                console.log("-----------------------------------");
+            .then(redirectedResponse => redirectingSTLSource(redirectedResponse))
+            .then(res =>resolve(res.text()))
+            .catch((error) => reject(error));
+    });
+};
 
-                const redirectParsedUrl = url.parse(redirectedResponse.headers.get('location'));
-                const redirectUrl = redirectedResponse.headers.get('location');
-                console.log(querystring.parse(redirectParsedUrl.query));
-                console.log(redirectParsedUrl.query);
-                console.log(redirectParsedUrl);
-                console.log(redirectUrl);
-                headers = buildHeaders(method, redirectParsedUrl.pathname, stream = true, (redirectParsedUrl.query));
-                let redirectedBodyToPassInFetch = {
-                    method: method,
-                    headers: headers,
-                    query: querystring.parse(redirectParsedUrl.query)
-                };
-                fetch(redirectParsedUrl.href, redirectedBodyToPassInFetch)
-                    .then((res) => console.log(res))
-                    .catch((error) => console.log(error));
-
-                /* fetch(redirectedResponse.headers.get('location'), redirectedBodyToPassInFetch)
-                    .then(response => { console.log(response); resolve(response); return response; }); */
-            })
-            //console.log(url.parse(redirectedResponse.headers.location));                
-            .then(res => resolve(res));
+const redirectingSTLSource = function (redirectedResponse) {
+    console.log("...redirectingSTLsource...");
+    const redirectParsedUrl = url.parse(redirectedResponse.headers.get('location'));
+    const method = 'GET';
+    const headers = buildHeaders(method, redirectParsedUrl.pathname, stream = true, (redirectParsedUrl.query));
+    const redirectedBodyToPassInFetch = {
+        method: method,
+        headers: headers,
+        query: querystring.parse(redirectParsedUrl.query)
+    };
+    return new Promise(async (resolve, reject) => {
+        fetch(redirectParsedUrl.href, redirectedBodyToPassInFetch)
+            .then((res) =>{  resolve(res)})
+            .catch((error) => reject(error));
     });
 };
 
