@@ -3,7 +3,6 @@ body, #root, root, html .App{
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
   background-color: rgb(50, 50, 60);
 }
 
@@ -12,14 +11,9 @@ body, #root, root, html .App{
   padding: 0;
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
-
-/* .shift-buttons {
-  position: relative;
-  top:20%;
-  left:50%;
-  overflow: visible;
-} */
 
 .canvas {
   width: 100%;
@@ -30,29 +24,42 @@ body, #root, root, html .App{
 }
 
 .sliders {
-  position: absolute;
-  top: 15%;
-  left: 70%;
+  flex:1;
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  height: 70%;
+  position: relative;
+  left: 75%;
+  padding-top: 10%;
+  padding-bottom: 10%;
 }
 
-.update-download-buttons-container {
-  position: absolute;
-  top: 65%;
-  left: 65%;
+.control-buttons{
   overflow: hidden;
+  display: flex;
+  height: 10%;
+  position: relative;
+  flex: 0.2;
 }
 
-.shift-buttons-container {
-  position: absolute;
-  top: 65%;
-  left: 40%;
-  overflow: hidden;
+.shift-buttons-container{
+  display: flex;
+  flex:1.5;
+}
+
+.update-download-buttons-container{
+  display: flex;
+  flex:1;
 }
 
 .btn{
-  border: 2px solid #3498db;
+  margin: 0.5em;
+  height: 80%;
+  flex: 1;
+  border: 4px solid #3498db;
   background: none;
-  padding: 10px 10px;
+  padding: 0.1em 0.1em;
   font-family: verdana;
   font-weight: bold;
   font-size: 20px;
@@ -61,8 +68,7 @@ body, #root, root, html .App{
   -webkit-text-stroke-width: 0.04em;
   -webkit-text-stroke-color: black;
   cursor: pointer;
-  margin: 10px;
-  transition: 0.8s;
+  transition: 0.5s;
   border-radius: 0.5em;
 }
 
@@ -75,6 +81,7 @@ body, #root, root, html .App{
 }
 
 .slider-name, .actual-state-slider{
+  flex:1;
   font-family: verdana;
   font-weight: bold;
   font-size: 20px;

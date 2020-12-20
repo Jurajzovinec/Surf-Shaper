@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class UpdateButton extends Component {
+class UpdateDownloadButtons extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -62,4 +62,4 @@ class UpdateButton extends Component {
         );
     }
 }
-export default UpdateButton;
+export default UpdateDownloadButtons;

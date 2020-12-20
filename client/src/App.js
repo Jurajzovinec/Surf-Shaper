@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import BuildSliders from './components/BuildSliders';
 import SurfsCollection from './components/SurfsCollection';
 import ShiftButtons from "./components/ShiftButtons";
-import UpdateButton from "./components/UpdateCurrentConfigButton";
+import UpdateDownloadButtons from "./components/UpdateDownloadButtons";
 import './App.css';
 
 
@@ -139,11 +139,12 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        
         <SurfsCollection positions={this.state.positions} gltfData={this.state.gltfData} />
-        <ShiftButtons changePositions={this.changePositions} getThisState={this.getThisState} />
         <BuildSliders surf={this.state.activeSurf.surf} dimensions={this.state.activeSurf.sliderValues} renderSliders={this.renderSliders} />
-        <UpdateButton configparams={this.state.activeSurf} updateGltf={this.updateGltf} getThisState={this.getThisState} />
+        <div className="control-buttons">
+          <ShiftButtons changePositions={this.changePositions} getThisState={this.getThisState} />
+          <UpdateDownloadButtons configparams={this.state.activeSurf} updateGltf={this.updateGltf} getThisState={this.getThisState} />
+        </div>
       </div>
     )
   }
