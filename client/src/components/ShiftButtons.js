@@ -21,9 +21,9 @@ class ShiftButtons extends Component {
 
     render() {
         return (
-            <div className="shift-buttons">
-                <button onClick={this.shiftLeft}> {'<-'} </button>
-                <button onClick={this.shiftRight}> {'->'} </button>
+            <div className="shift-buttons-container">
+                <button className="btn btn3" onClick={this.shiftLeft}> {'Left'} </button>
+                <button className="btn btn4" onClick={this.shiftRight}> {'Right'} </button>
             </div>
         );
     }

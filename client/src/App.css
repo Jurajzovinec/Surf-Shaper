@@ -4,6 +4,7 @@ body, #root, root, html .App{
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background-color: rgb(50, 50, 60);
 }
 
 .App {
@@ -13,12 +14,12 @@ body, #root, root, html .App{
   height: 100%;
 }
 
-.shift-buttons {
+/* .shift-buttons {
   position: relative;
-  top:60%;
+  top:20%;
   left:50%;
   overflow: visible;
-}
+} */
 
 .canvas {
   width: 100%;
@@ -29,21 +30,59 @@ body, #root, root, html .App{
 }
 
 .sliders {
-  position: relative;
+  position: absolute;
   top: 15%;
   left: 70%;
 }
 
-.update-config-button {
-  position: relative;
-  top: 20%;
-  left: 70%;
+.update-download-buttons-container {
+  position: absolute;
+  top: 65%;
+  left: 65%;
+  overflow: hidden;
 }
 
-.download-stl-button{
-  position: relative;
-  top: 17.5%;
-  left: 75%;
+.shift-buttons-container {
+  position: absolute;
+  top: 65%;
+  left: 40%;
+  overflow: hidden;
+}
+
+.btn{
+  border: 2px solid #3498db;
+  background: none;
+  padding: 10px 10px;
+  font-family: verdana;
+  font-weight: bold;
+  font-size: 20px;
+  letter-spacing: 0.2em;
+  -webkit-text-fill-color: white;
+  -webkit-text-stroke-width: 0.04em;
+  -webkit-text-stroke-color: black;
+  cursor: pointer;
+  margin: 10px;
+  transition: 0.8s;
+  border-radius: 0.5em;
+}
+
+.btn1:hover, .btn2:hover, .btn3:hover, .btn4:hover{
+  background:#3498db;
+}
+
+.background-img{
+  width:null;
+}
+
+.slider-name, .actual-state-slider{
+  font-family: verdana;
+  font-weight: bold;
+  font-size: 20px;
+  color: white;
+  letter-spacing: 0.2em;
+  -webkit-text-fill-color: white;
+  -webkit-text-stroke-width: 0.04em;
+  -webkit-text-stroke-color: black;
 }
 
 

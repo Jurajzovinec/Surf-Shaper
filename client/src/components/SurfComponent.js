@@ -4,8 +4,6 @@ import React, { useMemo, useState } from 'react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useSpring, animated } from 'react-spring/three';
 import { useEffect } from 'react';
-import { STLExporter } from "three/examples/jsm/exporters/STLExporter";
-import convertToStl from './convertToStl';
 
 const cube = {
     "accessors": [

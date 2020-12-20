@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import convertToStl from './convertToStl';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { createAsset, useAsset } from "use-asset";
 
 class UpdateButton extends Component {
     constructor(props) {
@@ -58,9 +55,9 @@ class UpdateButton extends Component {
 
     render() {
         return (
-            <div className="update-config-button">
-                <button onClick={this.sendConfiguration}> {'Update'} </button>
-                <button onClick={this.downloadStlData}> {'Download STL'} </button>
+            <div className="update-download-buttons-container">
+                <button className="btn btn1" onClick={this.sendConfiguration}> {'Update'} </button>
+                <button className="btn btn2" onClick={this.downloadStlData}> {'Download STL'} </button>
             </div>
         );
     }

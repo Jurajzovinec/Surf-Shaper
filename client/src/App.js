@@ -48,7 +48,6 @@ class App extends Component {
   }
 
   setActiveSurf() {
-
     const isFrontPositionSurf = (surfPosition) => surfPosition.position.toString() === [0, 1, 0].toString();
     let activeSurf = this.state.surfsCollection.find(isFrontPositionSurf);
     this.setState({ activeSurf: { surf: activeSurf.surf, sliderValues: [] } },
@@ -57,7 +56,6 @@ class App extends Component {
   }
 
   setActiveSliderValues() {
-
     const isFrontPositionParams = (sliderValue) => sliderValue.surf === this.state.activeSurf.surf;
     let activeBuildValues = this.state.sliderValues.find(isFrontPositionParams);
     let currentSurfState = this.state.activeSurf.surf;
@@ -69,7 +67,6 @@ class App extends Component {
   }
 
   changePositions(newPositions) {
-
     this.setState({
       positions: newPositions,
       surfsCollection: [
@@ -81,7 +78,6 @@ class App extends Component {
   }
 
   getDefaultGltfData() {
-
     fetch("http://localhost:5000/defaultmodel")
       .then(response => response.json())
       .then(defaultGltfData => {
@@ -143,6 +139,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        
         <SurfsCollection positions={this.state.positions} gltfData={this.state.gltfData} />
         <ShiftButtons changePositions={this.changePositions} getThisState={this.getThisState} />
         <BuildSliders surf={this.state.activeSurf.surf} dimensions={this.state.activeSurf.sliderValues} renderSliders={this.renderSliders} />
@@ -151,5 +148,7 @@ class App extends Component {
     )
   }
 }
+
+//<BackgroundImg/>
 
 export default App;

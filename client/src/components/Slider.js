@@ -9,7 +9,9 @@ class Slider extends Component {
     }
 
     displayChange(e) {
-        e.preventDefault();
+
+        console.log(e);
+        //e.preventDefault();
         let tempArray = JSON.parse(JSON.stringify(this.state.values));
         tempArray.curValue = e.target.value;
         this.setState({ values: tempArray }, () => this.renderSlider(parseFloat(e.target.value)));
@@ -32,7 +34,7 @@ class Slider extends Component {
                     value={this.state.values.curValue}
                     className="slider"
                     step={1}
-                    onChange={this.displayChange}>
+                    onInput ={this.displayChange}>
                 </input>
                 <span className="actual-state-slider">{this.state.values.curValue}</span>
             </div>
