@@ -28,7 +28,6 @@ body, #root, root, html .App{
   display: flex;
   flex-direction: column;
   width: 20%;
-  height: 70%;
   position: relative;
   left: 75%;
   padding-top: 10%;
@@ -57,7 +56,7 @@ body, #root, root, html .App{
   margin: 0.5em;
   height: 80%;
   flex: 1;
-  border: 4px solid #3498db;
+  border: 2px solid #3498db;
   background: none;
   padding: 0.1em 0.1em;
   font-family: verdana;

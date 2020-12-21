@@ -1,9 +1,12 @@
 import React, { Suspense, useState, useEffect, useMemo } from 'react';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { softShadows, OrbitControls, Stars, MeshWobbleMaterial } from 'drei';
+import { softShadows, OrbitControls, MeshWobbleMaterial, Stars } from 'drei';
 import { Canvas } from 'react-three-fiber';
 import SurfComponent from './SurfComponent';
-import { useSpring } from 'react-spring/three';
+import { useSpring, animated } from 'react-spring/three';
+import * as THREE from 'three/src/Three';
+
+// 
 
 const Lights = () => {
     return (
@@ -51,8 +54,10 @@ const SurfsCollection = (props) => {
 
     const [shiftSurfs, setShiftSurfs] = useState(false);
     const [updateSurf, setUpdateSurf] = useState(false);
+    const [rotateMoon, setRotateMoon] = useState(false);
 
-    const { posSurfOne, posSurfTwo, posSurfThree, color, scale, ...properties } = useSpring({
+
+    const { posSurfOne, posSurfTwo, posSurfThree } = useSpring({
         posSurfOne: shiftSurfs ? firstSurfPos[1] : firstSurfPos[0],
         posSurfTwo: shiftSurfs ? secondSurfPos[1] : secondSurfPos[0],
         posSurfThree: shiftSurfs ? thirdSurfPos[1] : thirdSurfPos[0],
@@ -75,9 +80,15 @@ const SurfsCollection = (props) => {
         setShiftSurfs(false);
     }, [props])
 
+    useEffect(() => {
+        setRotateMoon(true);
+
+        setRotateMoon(false);
+    }, [props])
+
     const Island = () => (
         <group>
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -14, 0]} receiveShadow>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -14, 0]}>
                 <sphereBufferGeometry attach="geometry" args={[15, 32, 32]} />
                 <meshPhysicalMaterial attach="material" color="yellow" />
             </mesh>
@@ -86,7 +97,7 @@ const SurfsCollection = (props) => {
 
     const SeaPlanet = () => (
         <group>
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -100, 0]} receiveShadow>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -100, 0]}>
                 <sphereBufferGeometry attach="geometry" args={[99, 64, 64]} />
                 <MeshWobbleMaterial color="#4372a4" speed={0.5} factor={0.5} />
             </mesh>
@@ -97,28 +108,44 @@ const SurfsCollection = (props) => {
         return null;
     });
 
-    const url = process.env.PUBLIC_URL + "/scene.gltf"
+    const palmTreeUrl = process.env.PUBLIC_URL + "/scene.gltf"
 
     useEffect(() => {
-        new GLTFLoader().load(url, gltf => {
-            console.log('UseEffectFired');
+        new GLTFLoader().load(palmTreeUrl, gltf => {
             setPalmTree(gltf.scene)
         })
-    }, [url])
+    }, [palmTreeUrl])
 
     const PalmTree = () => {
-        return palmTree ? <primitive object={palmTree} position={[-3, 0, 0]}/> : null
+        return palmTree ? <primitive object={palmTree} position={[-3, 0, 0]} /> : null
     }
 
+
+    const { rotation, scaleMoon } = useSpring({
+        scaleMoon: rotateMoon ? [1.5, 1.5, 1.5] : [1, 1, 1],
+        rotation: rotateMoon ? [0, THREE.Math.degToRad(360), THREE.Math.degToRad(0)] : [0, 0, 0],
+        config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 }
+    });
+
+
+    const LoadingComet = () => {
+        return (
+            <animated.mesh position={[200, -100, 0]} rotation={rotation} scale={scaleMoon}>
+                <sphereBufferGeometry attach="geometry" args={[15, 8, 8]} />
+            </animated.mesh>
+        )
+
+    }
 
     return (
         <div className="canvas">
             <Canvas colorManagement shadowMap camera={{ position: [0, 2, 10], fov: 60 }} >
                 <OrbitControls enablePan={false} target={[0, 1, 0]} />
                 <Lights />
-                <Island />
                 <SeaPlanet />
-                <PalmTree />               
+                <Island />
+                <PalmTree />
+                <LoadingComet />
                 <Suspense fallback={null}>
                     <SurfComponent position={posSurfOne} gltfData={firstSurfGltf} />
                     <SurfComponent position={posSurfTwo} gltfData={secondSurfGltf} />

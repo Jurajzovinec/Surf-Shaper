@@ -734,6 +734,7 @@ const SurfComponent = ({ position, gltfData }) => {
     } else {
         buffer = JSON.stringify(cube);
     }
+    
     const { scene } = useAsset((buffer) => new Promise((res, rej) => new GLTFLoader().parse(buffer, '', res, rej)), [buffer]);
     
     const sceneCopy = useMemo(() => {
@@ -742,8 +743,7 @@ const SurfComponent = ({ position, gltfData }) => {
 
     const [initialize, setInitialize] = useState(false);
 
-    const { color, pos, ...props } = useSpring({
-        color: initialize ? 'hotpink' : 'white',
+    const { scale, rotation } = useSpring({
         scale: initialize ? [1.5, 1.5, 1.5] : [1, 1, 1],
         rotation: initialize ? [0, THREE.Math.degToRad(360), THREE.Math.degToRad(0)] : [0, 0, 0],
         config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 }
@@ -764,7 +764,7 @@ const SurfComponent = ({ position, gltfData }) => {
     }, []);
 
     return (
-        <animated.mesh position={position} {...props} >
+        <animated.mesh position={position} scale={scale} rotation={rotation} >
             <primitive object={sceneCopy} dispose={null} />
         </animated.mesh>
     )
