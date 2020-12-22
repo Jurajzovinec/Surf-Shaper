@@ -75,10 +75,6 @@ body, #root, root, html .App{
   background:#3498db;
 }
 
-.background-img{
-  width:null;
-}
-
 .slider-name, .actual-state-slider{
   flex:1;
   font-family: verdana;
@@ -89,6 +85,26 @@ body, #root, root, html .App{
   -webkit-text-fill-color: white;
   -webkit-text-stroke-width: 0.04em;
   -webkit-text-stroke-color: black;
+}
+
+.git-hub-ref{
+  position: absolute;
+  right: 0%;
+  top: 0%;
+  width: 8%;
+  justify-items: right;
+}
+
+.git-img{
+  opacity: 0.5;
+  width: 100%; 
+  transition: 0.3s;
+}
+
+.git-img:hover{
+  cursor: pointer;
+  opacity: 1;
+  transition: 0.3s;
 }
 
 .ReactModal__Overlay {
@@ -105,6 +121,8 @@ body, #root, root, html .App{
   opacity: 0;
   transition: opacity 500ms ease-in-out;
 }
+
+
 
 
 

@@ -25,7 +25,7 @@ const InfoWaitModal = (props) => {
     return (
         <div className="InfoWaitModal">
             <Modal isOpen={props.fireInfoModal} style={customModalStyles} closeTimeoutMS={1000}>
-                <h2>Please wait untill new surf is updated</h2>
+                <h2>Please wait untill the current surf is updated...</h2>
             </Modal>
         </div>
     )

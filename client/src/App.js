@@ -4,6 +4,7 @@ import ThreeDWorld from './components/ThreeDWorld';
 import ShiftButtons from "./components/ShiftButtons";
 import UpdateDownloadButtons from "./components/UpdateDownloadButtons";
 import InfoWaitModal from "./components/InfoWaitModal";
+import GitHubReference from "./components/GitHubReference";
 import './App.css';
 
 class App extends Component {
@@ -179,6 +180,7 @@ class App extends Component {
             fireInfoModal={this.fireInfoModal}
           />
         </div>
+        <GitHubReference />
         <InfoWaitModal fireInfoModal={this.state.fireInfoModal} />
       </div>
     )
