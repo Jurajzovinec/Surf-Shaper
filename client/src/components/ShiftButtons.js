@@ -12,6 +12,8 @@ class ShiftButtons extends Component {
             let changingArray = this.props.getThisState().positions;
             changingArray.unshift(changingArray.pop());
             this.props.changePositions(changingArray);
+        } else {
+            this.props.fireInfoModal();
         }
     }
 
@@ -20,6 +22,8 @@ class ShiftButtons extends Component {
             let changingArray = this.props.getThisState().positions;
             changingArray.push(changingArray.shift());
             this.props.changePositions(changingArray);
+        } else {
+            this.props.fireInfoModal();
         }
     }
 

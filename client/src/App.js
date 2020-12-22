@@ -3,8 +3,8 @@ import BuildSliders from './components/BuildSliders';
 import ThreeDWorld from './components/ThreeDWorld';
 import ShiftButtons from "./components/ShiftButtons";
 import UpdateDownloadButtons from "./components/UpdateDownloadButtons";
+import InfoWaitModal from "./components/InfoWaitModal";
 import './App.css';
-
 
 class App extends Component {
 
@@ -31,7 +31,8 @@ class App extends Component {
         { surf: "surfTwo", data3D: undefined },
         { surf: "surfThree", data3D: undefined }
       ],
-      isLoadingUpdatedSurf: false
+      isLoadingUpdatedSurf: false,
+      fireInfoModal: false
     };
     this.getParametersForSliders = this.getParametersForSliders.bind(this);
     this.changePositions = this.changePositions.bind(this);
@@ -42,6 +43,7 @@ class App extends Component {
     this.getDefaultGltfData = this.getDefaultGltfData.bind(this);
     this.updateGltf = this.updateGltf.bind(this);
     this.setLoadState = this.setLoadState.bind(this);
+    this.fireInfoModal = this.fireInfoModal.bind(this);
   }
 
   componentDidMount() {
@@ -142,6 +144,11 @@ class App extends Component {
     bool ? this.setState({ isLoadingUpdatedSurf: true }) : this.setState({ isLoadingUpdatedSurf: false })
   }
 
+  fireInfoModal(){
+    this.setState({fireInfoModal: true});
+    setTimeout(()=>this.setState({fireInfoModal: false}), 3000);
+  }
+
 
   render() {
     return (
@@ -161,6 +168,7 @@ class App extends Component {
             changePositions={this.changePositions}
             getThisState={this.getThisState}
             isLoadingUpdatedSurf={this.state.isLoadingUpdatedSurf}
+            fireInfoModal={this.fireInfoModal}
           />
           <UpdateDownloadButtons
             isLoadingUpdatedSurf={this.state.isLoadingUpdatedSurf}
@@ -168,8 +176,10 @@ class App extends Component {
             updateGltf={this.updateGltf}
             getThisState={this.getThisState}
             setLoadState={this.setLoadState}
+            fireInfoModal={this.fireInfoModal}
           />
         </div>
+        <InfoWaitModal fireInfoModal={this.state.fireInfoModal} />
       </div>
     )
   }

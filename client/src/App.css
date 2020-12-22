@@ -91,5 +91,21 @@ body, #root, root, html .App{
   -webkit-text-stroke-color: black;
 }
 
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open{
+  opacity: 1;
+  transition: opacity 500ms ease-in-out;
+}
+
+.ReactModal__Overlay--before-close{
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+
+
 
 

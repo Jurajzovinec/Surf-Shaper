@@ -100,8 +100,6 @@ const ThreeDWorld = (props) => {
 
     // UseStates (run only on start)
 
-    const [rotateComet, setRotateComet] = useState(() => false);
-
     const [firstSurfPos, setFirstSurfPos] = useState(() => {
         return [props.positions[0]];
     });
@@ -162,8 +160,17 @@ const ThreeDWorld = (props) => {
             <Canvas concurrent
                 colorManagement
                 shadowMap
-                camera={{ position: [0, 25, 65], fov: 60 }} >
-                <OrbitControls enablePan={false} target={[0, 1, 0]} />
+                camera={{ position: [0, 15, 35], fov: 50 }} >
+                <OrbitControls 
+                    enablePan={false} 
+                    target={[0, 1, 0]} 
+                    enableDamping={true}
+                    minPolarAngle={Math.PI / 4}
+                    maxPolarAngle={Math.PI / 2}
+                    minDistance={3}
+                    maxDistance={400}
+
+                    />
                 <Lights />
                 <SeaPlanet />
                 <Island />
