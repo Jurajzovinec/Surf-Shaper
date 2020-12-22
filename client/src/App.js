@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import BuildSliders from './components/BuildSliders';
-import SurfsCollection from './components/SurfsCollection';
+import ThreeDWorld from './components/ThreeDWorld';
 import ShiftButtons from "./components/ShiftButtons";
 import UpdateDownloadButtons from "./components/UpdateDownloadButtons";
 import './App.css';
@@ -30,7 +30,8 @@ class App extends Component {
         { surf: "surfOne", data3D: undefined },
         { surf: "surfTwo", data3D: undefined },
         { surf: "surfThree", data3D: undefined }
-      ]
+      ],
+      isLoadingUpdatedSurf: false
     };
     this.getParametersForSliders = this.getParametersForSliders.bind(this);
     this.changePositions = this.changePositions.bind(this);
@@ -40,6 +41,7 @@ class App extends Component {
     this.setActiveSliderValues = this.setActiveSliderValues.bind(this);
     this.getDefaultGltfData = this.getDefaultGltfData.bind(this);
     this.updateGltf = this.updateGltf.bind(this);
+    this.setLoadState = this.setLoadState.bind(this);
   }
 
   componentDidMount() {
@@ -136,14 +138,37 @@ class App extends Component {
 
   }
 
+  setLoadState(bool) {
+    bool ? this.setState({ isLoadingUpdatedSurf: true }) : this.setState({ isLoadingUpdatedSurf: false })
+  }
+
+
   render() {
     return (
       <div className="App">
-        <SurfsCollection positions={this.state.positions} gltfData={this.state.gltfData} />
-        <BuildSliders surf={this.state.activeSurf.surf} dimensions={this.state.activeSurf.sliderValues} renderSliders={this.renderSliders} />
+        <ThreeDWorld
+          positions={this.state.positions}
+          gltfData={this.state.gltfData}
+          isLoadingUpdatedSurf={this.state.isLoadingUpdatedSurf} 
+          />
+        <BuildSliders
+          surf={this.state.activeSurf.surf}
+          dimensions={this.state.activeSurf.sliderValues}
+          renderSliders={this.renderSliders} 
+          />
         <div className="control-buttons">
-          <ShiftButtons changePositions={this.changePositions} getThisState={this.getThisState} />
-          <UpdateDownloadButtons configparams={this.state.activeSurf} updateGltf={this.updateGltf} getThisState={this.getThisState} />
+          <ShiftButtons
+            changePositions={this.changePositions}
+            getThisState={this.getThisState}
+            isLoadingUpdatedSurf={this.state.isLoadingUpdatedSurf}
+          />
+          <UpdateDownloadButtons
+            isLoadingUpdatedSurf={this.state.isLoadingUpdatedSurf}
+            configparams={this.state.activeSurf}
+            updateGltf={this.updateGltf}
+            getThisState={this.getThisState}
+            setLoadState={this.setLoadState}
+          />
         </div>
       </div>
     )

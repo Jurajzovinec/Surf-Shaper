@@ -5,43 +5,51 @@ class UpdateDownloadButtons extends Component {
         super(props);
         this.state = {
             values: props.configparams.sliderValues,
-            activeSurf: props.configparams.surf
+            activeSurf: props.configparams.surf,
+            isLoadingUpdatedSurf: props.isLoadingUpdatedSurf
         };
         this.sendConfiguration = this.sendConfiguration.bind(this);
         this.downloadStlData = this.downloadStlData.bind(this);
     }
 
     sendConfiguration() {
-        let requestParam = JSON.stringify(this.state.values);
+        if (!this.props.isLoadingUpdatedSurf) {
+            this.props.setLoadState(true);
 
-        fetch(`http://localhost:5000/retrievemodel/${requestParam}`)
-            .then(response => response.json())
-            .then(gltfData => this.props.updateGltf(this.state.activeSurf, gltfData))
-            .catch(error => console.log(error));
+            let requestParam = JSON.stringify(this.state.values);
+
+            fetch(`http://localhost:5000/retrievemodel/${requestParam}`)
+                .then(response => response.json())
+                .then(gltfData => {
+                    this.props.updateGltf(this.state.activeSurf, gltfData);
+                    this.props.setLoadState(false);
+                })
+                .catch(error => console.log(error));
+        }
     }
 
     downloadStlData() {
+        if (!this.props.isLoadingUpdatedSurf) {
+            let requestParam = JSON.stringify(this.state.values);
 
-        let requestParam = JSON.stringify(this.state.values);
+            const downloadStlFile = function (stlfData) {
+                const blob = new Blob([stlfData], { type: 'text/stl' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('hidden', '');
+                a.setAttribute('href', url);
+                a.setAttribute('download', 'SurfStl.stl');
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
 
-        const downloadStlFile = function(stlfData){
-            const blob = new Blob([stlfData], {type: 'text/stl'});
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('hidden', '');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'SurfStl.stl');
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        };
+            fetch(`http://localhost:5000/retrievemodelstl/${requestParam}`)
+                .then(response => (response.text()))
+                .then(response => downloadStlFile(response))
+                .catch(error => console.log(error));
 
-        fetch(`http://localhost:5000/retrievemodelstl/${requestParam}`)
-            .then(response =>(response.text()))
-            .then(response => downloadStlFile(response))
-            .catch(error => console.log(error));
-
-     
+        }
     }
 
     componentWillReceiveProps(receivedProps) {
