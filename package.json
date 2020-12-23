@@ -1,7 +1,7 @@
 {
-  "name": "@onshape/apikey-sample",
+  "name": "@surfshaper/backend",
   "version": "0.0.0",
-  "description": "Sample application using API keys",
+  "description": "Surf-shaper backend API",
   "private": true,
   "author": {
     "name": "Juraj Zovinec"
