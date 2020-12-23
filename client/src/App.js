@@ -12,7 +12,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      positions: [[0, 1, 0], [1, 1, -1], [-1, 1, -1]],
+      positions: [[0, 1, 0], [3, 0, -3], [-3, 0, -3]],
       surfsCollection: [
         { surf: "surfOne", position: [0, 1, 0] },
         { surf: "surfTwo", position: [1, 1, -1] },
@@ -150,7 +150,6 @@ class App extends Component {
     setTimeout(()=>this.setState({fireInfoModal: false}), 3000);
   }
 
-
   render() {
     return (
       <div className="App">
@@ -186,7 +185,5 @@ class App extends Component {
     )
   }
 }
-
-//<BackgroundImg/>
 
 export default App;

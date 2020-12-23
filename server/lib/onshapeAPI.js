@@ -3,19 +3,11 @@ const crypto = require('crypto');
 const fs = require('fs');
 const url = require('url');
 const querystring = require('querystring');
+const keys = require('../config/apikey');
 
-const keys = {
-    'baseUrl': 'https://cad.onshape.com',
-    'accessKey': "DrrjPHGexLoZDJ2dqIZlijp6",
-    'secretKey': "82FcdI3UIncvyVUScQEYAfpZgiZHUaKaPiAJgesEy0DPOSIS",
-    'documentId': "7d139508501735b4ddbdc6be",
-    'workspaceId': "f38fdcfec24ecd8c4d57ca4f",
-    'elementId': "040977ef479ed9114758fb02"
-};
-
-const body = {
+const gltfConfiguration = {
     includeExportIds: false,
-    formatName: "GLTF",
+    formatName: 'GLTF',
     flattenAssemblies: false,
     yAxisIsUp: false,
     triggerAutoDownload: false,
@@ -42,7 +34,7 @@ const body = {
     maximumChordLength: 10
 };
 
-// Request Creation Functions
+// Request Creation Function
 const buildHeaders = function (method, path, stream, querystring) {
     let headers = {
         'Content-Type': 'application/json',
@@ -51,34 +43,32 @@ const buildHeaders = function (method, path, stream, querystring) {
         'Accept': stream ? 'application/vnd.onshape.v1+octet-stream' : 'application/vnd.onshape.v1+json'
     };
     const queryString = querystring ? querystring : '';
-    const hmacString = (method + '\n' + headers['On-Nonce'] + '\n' + headers['Date'] + '\n' +
-        headers['Content-Type'] + '\n' + path + '\n' + queryString + '\n').toLowerCase();
+    const hmacString = (`${method}\n${headers['On-Nonce']}\n${headers['Date']}\n${headers['Content-Type']}\n${path}\n${queryString}\n`).toLowerCase();
     let hmac = crypto.createHmac('sha256', keys.secretKey);
     hmac.update(hmacString);
     let signature = hmac.digest('base64');
-    const authorization = 'On ' + keys.accessKey + ':HmacSHA256:' + signature;
+    const authorization = `On ${keys.accessKey}:HmacSHA256:${signature}`;
     headers['Authorization'] = authorization;
+    
     return headers;
 };
 
 // Translation Onshape API
 const gltfTranslation = function (updatedConfiguration) {
-    console.log("...working on gltfTranslation...");
-    //console.log(updatedConfiguration);
-    const url = "/api/partstudios/d/7d139508501735b4ddbdc6be/w/f38fdcfec24ecd8c4d57ca4f/e/040977ef479ed9114758fb02/translations";
+    console.log('...working on gltfTranslation...');
+    const url = `/api/partstudios/d/${keys.documentId}/w/${keys.workspaceId}/e/${keys.elementId}/translations`;
     const method = 'POST';
-    const absoluteUrl = "https://cad.onshape.com" + url;
+    const absoluteUrl = 'https://cad.onshape.com' + url;
     const headers = buildHeaders(method, url);
     const bodyToPassInFetch = {
         method: method,
         headers: headers,
-        body: JSON.stringify(body)
+        body: JSON.stringify(gltfConfiguration)
     };
     return new Promise(async (resolve, reject) => {
         fetch(absoluteUrl, bodyToPassInFetch)
             .then(res => res.json())
             .then(res => {
-                //console.log(`Id of the Translation from gltfTranslation is ${res.id}.....gltfTranslation`);
                 resolve(res.id);
             })
             .catch(error => reject(`Error: ${error}`));
@@ -86,11 +76,10 @@ const gltfTranslation = function (updatedConfiguration) {
 };
 
 const getTranslationStatus = function (tid) {
-    //console.log('Here is confirmed that tid is the same '+tid);
-    console.log("...getingTranslationStatus...");
-    const url = "/api/translations/" + tid;
+    console.log('...getingTranslationStatus...');
+    const url = '/api/translations/' + tid;
     const method = 'GET';
-    const absoluteUrl = "https://cad.onshape.com" + url;
+    const absoluteUrl = 'https://cad.onshape.com' + url;
     const headers = buildHeaders(method, url);
     const bodyToPassInFetch = {
         method: method,
@@ -101,7 +90,6 @@ const getTranslationStatus = function (tid) {
             fetch(absoluteUrl, bodyToPassInFetch)
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res);
                     if (res.requestState === 'ACTIVE') {
                         newPromisTobeDone();
                     } else {
@@ -110,7 +98,6 @@ const getTranslationStatus = function (tid) {
                             'resultExternalDataIds': res.resultExternalDataIds[0],
                             'documentId': res.documentId
                         });
-                        //console.log(resultDict);
                         resolve(resultDict);
                     }
                 })
@@ -122,9 +109,9 @@ const getTranslationStatus = function (tid) {
 
 const getExternalData = function (documentId, resultExternalDataIds) {
     console.log('...getingExternalData...');
-    const url = "/api/documents/d/" + documentId + "/externaldata/" + resultExternalDataIds;
+    const url = `/api/documents/d/${documentId}/externaldata/${resultExternalDataIds}`;
     const method = 'GET';
-    const absoluteUrl = "https://cad.onshape.com" + url;
+    const absoluteUrl = 'https://cad.onshape.com' + url;
     const headers = buildHeaders(method, url, stream = true);
     const bodyToPassInFetch = {
         method: method,
@@ -132,7 +119,7 @@ const getExternalData = function (documentId, resultExternalDataIds) {
     };
     return new Promise(async (resolve, reject) => {
         fetch(absoluteUrl, bodyToPassInFetch)
-            .then(res => resolve(res.text()))
+            .then(res => { console.log(res); resolve(res.text()) })
             .catch(error => reject(`Error: ${error}`));
     });
 };
@@ -150,9 +137,9 @@ const fullTranslation = function () {
 // Export to STL file
 const stlTranslation = function (updatedConfiguration) {
     console.log('...gettingSTLData...');
-    const urlStl = "/api/partstudios/d/7d139508501735b4ddbdc6be/w/f38fdcfec24ecd8c4d57ca4f/e/040977ef479ed9114758fb02/stl";
+    const urlStl = `/api/partstudios/d/${keys.documentId}/w/${keys.workspaceId}/e/${keys.elementId}/stl`;
     const method = 'GET';
-    const absoluteUrl = "https://cad.onshape.com" + urlStl;
+    const absoluteUrl = 'https://cad.onshape.com' + urlStl;
     const headers = buildHeaders(method, urlStl, stream = true);
     const bodyToPassInFetch = {
         method: method,
@@ -168,7 +155,7 @@ const stlTranslation = function (updatedConfiguration) {
 };
 
 const redirectingSTLSource = function (redirectedResponse) {
-    console.log("...redirectingSTLsource...");
+    console.log('...redirectingSTLsource...');
     const redirectParsedUrl = url.parse(redirectedResponse.headers.get('location'));
     const method = 'GET';
     const headers = buildHeaders(method, redirectParsedUrl.pathname, stream = true, (redirectParsedUrl.query));
@@ -197,10 +184,10 @@ const configureAndTranslateSTL = function (newConfigurationObject) {
 
 // Configuration Onshape API
 const getConfiguration = function () {
-    console.log("...gettingConfiguration...");
-    const url = "/api/elements/d/7d139508501735b4ddbdc6be/w/f38fdcfec24ecd8c4d57ca4f/e/040977ef479ed9114758fb02/configuration";
+    console.log('...gettingConfiguration...');
+    const url = `/api/elements/d/${keys.documentId}/w/${keys.workspaceId}/e/${keys.elementId}/configuration`;
     const method = 'GET';
-    const absoluteUrl = "https://cad.onshape.com" + url;
+    const absoluteUrl = 'https://cad.onshape.com' + url;
     const headers = buildHeaders(method, url);
     const bodyToPassInFetch = {
         method: method,
@@ -219,7 +206,7 @@ const getConfigurationParams = function () {
         getConfiguration()
             .then(recievedConfiguration => {
                 recievedConfiguration.configurationParameters.map(element => {
-                    if (element.message.quantityType === "LENGTH" || element.message.quantityType === "ANGLE") {
+                    if (element.message.quantityType === 'LENGTH' || element.message.quantityType === 'ANGLE') {
                         returnState.push({
                             name: element.message.parameterName,
                             minValue: element.message.rangeAndDefault.message.minValue,
@@ -236,10 +223,10 @@ const getConfigurationParams = function () {
 };
 
 const updateConfiguration = function (updatedConfiguration) {
-    console.log("...updatingConfiguration...");
-    const url = "/api/elements/d/7d139508501735b4ddbdc6be/w/f38fdcfec24ecd8c4d57ca4f/e/040977ef479ed9114758fb02/configuration";
+    console.log('...updatingConfiguration...');
+    const url = `/api/elements/d/${keys.documentId}/w/${keys.workspaceId}/e/${keys.elementId}/configuration`;
     const method = 'POST';
-    const absoluteUrl = "https://cad.onshape.com" + url;
+    const absoluteUrl = 'https://cad.onshape.com' + url;
     const headers = buildHeaders(method, url);
     const bodyToPassInFetch = {
         method: method,
@@ -249,14 +236,14 @@ const updateConfiguration = function (updatedConfiguration) {
 
     return new Promise(async (resolve, reject) => {
         fetch(absoluteUrl, bodyToPassInFetch)
-            .then(res => resolve(res.json()))
+            .then(res =>  resolve(res.json()))
             .catch(error => reject(`Error: ${error}`));
     });
 };
 
 // newDimension manipulation 
 const changeParameter = function (recievedConfiguration, newConfigurationObject) {
-    console.log("...changingParameter...");
+    console.log('...changingParameter...');
     //console.log(newConfigurationObject);
     return new Promise(async (resolve, reject) => {
         newConfigurationObject.forEach((configParam) => {
@@ -292,9 +279,10 @@ const configureAndTranslate = function (newConfigurationObject) {
 // Documentation API
 const getDocumentation = function () {
 
-    const url = "/api/documents/7d139508501735b4ddbdc6be";
+    //const url = '/api/documents/7d139508501735b4ddbdc6be';
+    const url = `/api/documents/${keys.documentId}`;
     const method = 'GET';
-    const absoluteUrl = "https://cad.onshape.com" + url;
+    const absoluteUrl = 'https://cad.onshape.com' + url;
     const headers = buildHeaders(method, url);
     const bodyToPassInFetch = {
         method: method,

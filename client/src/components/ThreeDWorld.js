@@ -12,22 +12,12 @@ const Lights = () => {
     return (
         <>
             <ambientLight intensity={0.3} />
-            <directionalLight position={[10, 10, 5]} intensity={0.5} />
-            <directionalLight
-                castShadow
-                penumbra={1}
-                position={[0, 10, 0]}
-                intensity={1.5}
-                shadow-mapSize-width={1024}
-                shadow-mapSize-height={1024}
-                shadow-camera-far={50}
-                shadow-camera-left={-10}
-                shadow-camera-right={10}
-                shadow-camera-top={10}
-                shadow-camera-bottom={-10}
-            />
-            {/* Spotlight Large overhead light */}
-            <spotLight intensity={1} position={[1000, 0, 0]} castShadow />
+            {/* Galaxy light */}
+            <spotLight intensity={1} position={[200, 200, 0]} castShadow/>
+            {/* Showcase light from  front */}
+            <pointLight intensity={2} position={[0, 3, 1.5]} distance={4} decay={1}/>
+            {/* Showcase light from  behind */}
+            <pointLight intensity={2} position={[0, 3, -1.5]} distance={5} decay={1}/>
         </>
     );
 };
@@ -36,7 +26,7 @@ const Island = () => {
     const island = useRef();
     return (
         <mesh ref={island} rotation={[-Math.PI / 2, 0, 0]} position={[0, -14, 0]}>
-            <sphereBufferGeometry attach="geometry" args={[15, 32, 32]} />
+            <sphereBufferGeometry attach="geometry" args={[14.5, 32, 32]} />
             <meshStandardMaterial attach="material" color="yellow" />
         </mesh>
     )
@@ -60,24 +50,24 @@ const PalmTree = () => {
         return null;
     });
 
-    useEffect(() => {    
+    useEffect(() => {
         new GLTFLoader().load(palmTreeUrl, gltf => {
             setPalmTree(gltf.scene);
         });
     }, [palmTreeUrl]);
-        
+
     return (
-        palmTree ? <primitive object={palmTree} position={[-3, 0, 0]} /> : null
+        palmTree ? <primitive object={palmTree} position={[-5, -2, -3]} /> : null
     )
 };
 
 const LoadingComet = (isLoadingUpdatedSurf) => {
     const mesh = useRef(null);
 
-    useFrame(()=>(mesh.current.rotation.x = mesh.current.rotation.y += 0.02 ))
+    useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.02))
 
     let drivingValue = isLoadingUpdatedSurf.isLoadingUpdatedSurf;
-     
+
     const { rotationComet, scaleComet, positionComet, cometColor } = useSpring({
         scaleComet: drivingValue ? [2, 2, 2] : [0.1, 0.1, 0.1],
         rotationComet: drivingValue ? [0, THREE.Math.degToRad(360), THREE.Math.degToRad(270)] : [0, 0, 0],
@@ -95,8 +85,6 @@ const LoadingComet = (isLoadingUpdatedSurf) => {
 };
 
 const ThreeDWorld = (props) => {
-
-    console.log(props.isLoadingUpdatedSurf);
 
     // UseStates (run only on start)
 
@@ -125,7 +113,7 @@ const ThreeDWorld = (props) => {
     const [updateSurf, setUpdateSurf] = useState(false);
 
     // UseSprings
-    
+
     const { posSurfOne, posSurfTwo, posSurfThree } = useSpring({
         posSurfOne: shiftSurfs ? firstSurfPos[1] : firstSurfPos[0],
         posSurfTwo: shiftSurfs ? secondSurfPos[1] : secondSurfPos[0],
@@ -134,7 +122,7 @@ const ThreeDWorld = (props) => {
     });
 
     // UseEffects
-    
+
     useEffect(() => {
         setUpdateSurf(true);
         setfirstGltf(props.gltfData[0].data3D);
@@ -161,23 +149,23 @@ const ThreeDWorld = (props) => {
                 colorManagement
                 shadowMap
                 camera={{ position: [0, 15, 35], fov: 50 }} >
-                <OrbitControls 
-                    enablePan={false} 
-                    target={[0, 1, 0]} 
+                <OrbitControls
+                    enablePan={false}
+                    target={[0, 2, 0]}
                     enableDamping={true}
                     minPolarAngle={Math.PI / 4}
                     maxPolarAngle={Math.PI / 2}
                     minDistance={3}
                     maxDistance={400}
 
-                    />
+                />
                 <Lights />
                 <SeaPlanet />
                 <Island />
                 <Suspense fallback={null}>
                     <PalmTree />
                 </Suspense>
-                <LoadingComet isLoadingUpdatedSurf={props.isLoadingUpdatedSurf}/>
+                <LoadingComet isLoadingUpdatedSurf={props.isLoadingUpdatedSurf} />
                 <Suspense fallback={null}>
                     <SurfComponent position={posSurfOne} gltfData={firstSurfGltf} />
                     <SurfComponent position={posSurfTwo} gltfData={secondSurfGltf} />

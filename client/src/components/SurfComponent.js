@@ -1,9 +1,51 @@
 import * as THREE from 'three';
 import { useAsset } from 'use-asset';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useSpring, animated } from 'react-spring/three';
 import { useEffect } from 'react';
+
+const SurfComponent = ({ position, gltfData }) => {
+
+    const [initialize, setInitialize] = useState(() => false);
+
+    const mesh = useRef(null);
+
+    let buffer;
+
+    buffer = gltfData ? JSON.stringify(gltfData) : JSON.stringify(cube);
+
+    const { scene } = useAsset((buffer) => new Promise((res, rej) => new GLTFLoader().parse(buffer, '', res, rej)), [buffer]);
+
+    const sceneCopy = useMemo(() => scene?.clone(true), [scene]);
+
+    const newMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff0000,
+        metalness: 0.65,
+        roughness: 0,
+    });
+
+    sceneCopy.traverse((o) => { if (o.isMesh) o.material = newMaterial; });
+
+    useEffect(() => {
+        console.log('Scene has been updated.');
+        setInitialize(true);
+        setTimeout(setInitialize(!initialize), 2000);
+    }, [scene]);
+
+    const { rotation, color } = useSpring({
+        rotation: initialize ? [0, THREE.Math.degToRad(720), THREE.Math.degToRad(0)] : [0, 0, 0],
+        color: initialize ? '#f8f403' : '#250333',
+        config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 }
+    });
+
+    return (
+        <animated.mesh ref={mesh} position={position} scale={[1.5, 1.5, 1.5]} rotation={rotation} >
+            <primitive object={sceneCopy} dispose={null} />
+            <animated.meshStandardMaterial color={color} />
+        </animated.mesh>
+    )
+}
 
 const cube = {
     "accessors": [
@@ -725,49 +767,5 @@ const cube = {
         }
     ]
 };
-
-const SurfComponent = ({ position, gltfData }) => {
-    
-    let buffer;
-    if (gltfData) {
-        buffer = JSON.stringify(gltfData);
-    } else {
-        buffer = JSON.stringify(cube);
-    }
-    
-    const { scene } = useAsset((buffer) => new Promise((res, rej) => new GLTFLoader().parse(buffer, '', res, rej)), [buffer]);
-    
-    const sceneCopy = useMemo(() => {
-        return scene?.clone(true);
-    }, [scene]);
-
-    const [initialize, setInitialize] = useState(false);
-
-    const { scale, rotation } = useSpring({
-        scale: initialize ? [1.5, 1.5, 1.5] : [1, 1, 1],
-        rotation: initialize ? [0, THREE.Math.degToRad(360), THREE.Math.degToRad(0)] : [0, 0, 0],
-        config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 }
-    });
-
-    useEffect(() => {
-        let timeout;
-        const toggleInitialization = () => {
-            timeout = setTimeout(() => {
-                setInitialize(Number(!initialize));
-                toggleInitialization();
-            }, Math.random() * 2000 + 1000);
-        };
-        toggleInitialization();
-        return () => {
-            clearTimeout(timeout);
-        };
-    }, []);
-
-    return (
-        <animated.mesh position={position} scale={scale} rotation={rotation} >
-            <primitive object={sceneCopy} dispose={null} />
-        </animated.mesh>
-    )
-}
 
 export default SurfComponent;

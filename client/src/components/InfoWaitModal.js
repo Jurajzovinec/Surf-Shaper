@@ -5,21 +5,21 @@ Modal.setAppElement('#root');
 
 const customModalStyles = {
     content: {
-      top: '35%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      width: '60%',
-      transform: 'translate(-40%, -10%)',
-      borderRadius: '10px',
-      textAlign: 'center',
-      background: 'transparent',
-      fontFamily: 'verdana',
-      border: 'none',
-      transition: '0.2 2000ms ease-in-out'
+        top: '40%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        width: '60%',
+        transform: 'translate(-50%, +10%)',
+        borderRadius: '10px',
+        textAlign: 'center',
+        background: 'transparent',
+        fontFamily: 'verdana',
+        border: 'none',
+        transition: '0.2 2000ms ease-in-out'
     },
-  };
+};
 
 const InfoWaitModal = (props) => {
     return (
