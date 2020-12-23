@@ -3,7 +3,7 @@ body, #root, root, html .App{
   height: 100%;
   margin: 0;
   padding: 0;
-  background-color: rgb(50, 50, 60);
+  background-image: linear-gradient(rgb(24, 21, 21),rgb(108, 108, 128));
 }
 
 .App {
