@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { useAsset } from 'use-asset';
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState } from 'react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { useSpring, animated } from 'react-spring/three';
 import { useEffect } from 'react';
@@ -8,8 +8,6 @@ import { useEffect } from 'react';
 const SurfComponent = ({ position, gltfData }) => {
 
     const [initialize, setInitialize] = useState(() => false);
-
-    const mesh = useRef(null);
 
     let buffer;
 
@@ -20,29 +18,28 @@ const SurfComponent = ({ position, gltfData }) => {
     const sceneCopy = useMemo(() => scene?.clone(true), [scene]);
 
     const newMaterial = new THREE.MeshStandardMaterial({
-        color: 0xff0000,
+        color: 0xfcfc,
         metalness: 0.65,
-        roughness: 0,
+        roughness: 0
     });
 
     sceneCopy.traverse((o) => { if (o.isMesh) o.material = newMaterial; });
 
     useEffect(() => {
-        console.log('Scene has been updated.');
+        console.log(scene);
         setInitialize(true);
-        setTimeout(setInitialize(!initialize), 2000);
-    }, [scene]);
+        setInitialize(!initialize);
+    }, [buffer]);
 
-    const { rotation, color } = useSpring({
+    const { rotation } = useSpring({
         rotation: initialize ? [0, THREE.Math.degToRad(720), THREE.Math.degToRad(0)] : [0, 0, 0],
-        color: initialize ? '#f8f403' : '#250333',
         config: { mass: 10, tension: 1000, friction: 300, precision: 0.00001 }
     });
 
     return (
-        <animated.mesh ref={mesh} position={position} scale={[1.5, 1.5, 1.5]} rotation={rotation} >
+        <animated.mesh position={position} scale={[1.5, 1.5, 1.5]} rotation={rotation} >
             <primitive object={sceneCopy} dispose={null} />
-            <animated.meshStandardMaterial color={color} />
+            <animated.meshStandardMaterial />
         </animated.mesh>
     )
 }

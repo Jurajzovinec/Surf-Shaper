@@ -64,22 +64,21 @@ const PalmTree = () => {
 const LoadingComet = (isLoadingUpdatedSurf) => {
     const mesh = useRef(null);
 
-    useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.02))
+    useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y -= 0.02))
 
     let drivingValue = isLoadingUpdatedSurf.isLoadingUpdatedSurf;
 
-    const { rotationComet, scaleComet, positionComet, cometColor } = useSpring({
-        scaleComet: drivingValue ? [2, 2, 2] : [0.1, 0.1, 0.1],
+    const { rotationComet, scaleComet, positionComet } = useSpring({
+        scaleComet: drivingValue ? [3, 3, 3] : [0.1, 0.1, 0.1],
         rotationComet: drivingValue ? [0, THREE.Math.degToRad(360), THREE.Math.degToRad(270)] : [0, 0, 0],
         positionComet: drivingValue ? [0, 7, 0] : [0, 10, 0],
-        cometColor: drivingValue ? '#f8f403' : '#250333',
         config: { mass: 10, tension: 100, friction: 30 }
     });
 
     return (
         <animated.mesh ref={mesh} position={positionComet} scale={scaleComet} rotation={rotationComet} >
-            <animated.meshStandardMaterial color={cometColor} />
-            <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
+            <animated.meshStandardMaterial  color={"#21f500"}/>
+            <boxBufferGeometry attach="geometry" args={[0.5, 0.5, 0.5]}  />
         </animated.mesh>
     )
 };
@@ -137,10 +136,6 @@ const ThreeDWorld = (props) => {
         setSecondPos((prevPos) => [props.positions[1], prevPos[0]]);
         setThirdPos((prevPos) => [props.positions[2], prevPos[0]]);
         setShiftSurfs(false);
-    }, [props]);
-
-    useEffect(() => {
-        //setRotateComet(!rotateComet);
     }, [props]);
 
     return (
