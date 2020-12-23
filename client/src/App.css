@@ -87,6 +87,10 @@ body, #root, root, html .App{
   -webkit-text-stroke-color: black;
 }
 
+.slider:hover{
+  cursor: pointer;
+}
+
 .git-hub-ref{
   position: absolute;
   right: 0%;

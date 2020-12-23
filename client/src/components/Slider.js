@@ -27,12 +27,11 @@ class Slider extends Component {
                 <p className="slider-name">
                     {this.state.values.name}
                 </p>
-                <input
+                <input className="slider"
                     type="range"
                     min={this.state.values.min}
                     max={this.state.values.max}
-                    value={this.state.values.curValue}
-                    className="slider"
+                    value={this.state.values.curValue}    
                     step={1}
                     onInput ={this.displayChange}>
                 </input>
