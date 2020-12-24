@@ -116,8 +116,9 @@ class App extends Component {
   }
 
   getParametersForSliders() {
-
-    fetch("http://localhost:5000/configparams")
+    
+    const urlToFetch =  process.env.NODE_ENV === 'production'?  " https://surf-shaper.herokuapp.com/configparams" : "http://localhost:5000/configparams";
+    fetch(urlToFetch)
       .then(response => response.json())
       .then(dimensionList => {
         this.setState({
