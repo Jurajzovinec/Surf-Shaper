@@ -9,6 +9,7 @@ Application uses Onshape cloud based `CAD software`, where parametric model is c
 ## Fine then, how far we are?
 Demo version of the application has been deployed to https://surf-shaper.herokuapp.com/
 Since 3D model of surf requires more driving parameters, model is scaled to purpose of 3D printing. Surf could be download in STL format and loaded into 3D printer's slice software.
+
 ![](SurfPrusaSlicer.png)
 
 ## What about frontend ? 
