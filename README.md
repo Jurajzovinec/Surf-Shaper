@@ -6,12 +6,6 @@ Main goal of this web appliciation is allow user to create and shape his own suf
 ## How does app work?
 Application uses Onshape cloud based `CAD software`, where parametric model is configured. After user confirms changes, model is exported to GLTF format from `Onshape` and rendered on the website with `three js`.
 
-## Fine then, how far we are?
-Demo version of the application has been deployed to https://surf-shaper.herokuapp.com/
-Since 3D model of surf requires more driving parameters, model is scaled to purpose of 3D printing. Surf could be download in STL format and loaded into 3D printer's slice software.
-
-![](SurfPrusaSlicer.png)
-
 ## What about frontend ? 
 Frontend of this application is based on Reactjs framework. 3D world is mostly built on react-three-fiber library from Paul Henschell
 
@@ -24,7 +18,13 @@ Frontend of this application is based on Reactjs framework. 3D world is mostly b
 * After user confirmation request is sent to backend in order to update and download 3D model from www.onshape.com ->
 * Model is re-rendered in browser. 
 
-## Sources that helped ?
+## Fine then, how far we are?
+Demo version of the application has been deployed to https://surf-shaper.herokuapp.com/
+Since 3D model of surf requires more driving parameters, model is scaled to purpose of 3D printing. Surf could be download in STL format and loaded into 3D printer's slice software.
+
+![](SurfPrusaSlicer.png)
+
+## Sources might helped ?
 * `Node.js Crash Course` by The Net Ninja https://youtu.be/zb3Qk8SG5Ms
 * `Getting started Onshape API` by  Bill Schnoebelen  https://youtu.be/eFIMKjFxMes
 * `Get started with React and Three.js using react three fiber` by Wrong Akram https://youtu.be/fdtqqyeKRJk
