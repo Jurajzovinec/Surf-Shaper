@@ -6,6 +6,8 @@ Main goal of this web appliciation is allow user to create and shape his own suf
 ## How does app work?
 Application uses Onshape cloud based `CAD software`, where parametric model is configured. After user confirms changes, model is exported to GLTF format from `Onshape` and rendered on the website with `three js`.
 
+![](SurfOnShape.png)
+
 ## What about frontend ? 
 Frontend of this application is based on Reactjs framework. 3D world is mostly built on react-three-fiber library from Paul Henschell
 
