@@ -14,6 +14,7 @@ Since 3D model of surf requires more driving parameters, model is scaled to purp
 
 ## What about frontend ? 
 Frontend of this application is based on Reactjs framework. 3D world is mostly built on react-three-fiber library from Paul Henschell
+
 ![](Frontend.png)
 
 ### Lifecycle of frontend
