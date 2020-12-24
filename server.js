@@ -1,21 +1,13 @@
 const express = require('express');
 const onshape = require("./lib/onshapeAPI");
+const cors = require('cors');
+const path = require('path');
 const app = express();
 const port = process.env.PORT || 5000;
-const cors = require('cors');
 
 app.use(cors({ origin: "http://localhost:3000" }));
 
 app.use(express.static('public'));
-
-app.get('/view', (req, res) => {
-    res.sendFile(__dirname + '\\public\\view.html');
-});
-
-app.get('/stl', (req, res) => {
-    onshape.configureAndTranslateSTL()
-        .then(reponse => res.send(reponse));
-});
 
 app.get('/configparams', (req, res) => {
     onshape.getConfigurationParams()
@@ -41,6 +33,13 @@ app.get('/defaultmodel', (req, res) => {
         .then(gltfModelData => res.send(gltfModelData))
         .catch(error => { res.send(error); console.log(error); });
 });
+
+if(process.env.NODE_ENV === 'production') {
+    app.use(express.static('client/build'));
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'indexedDB.html'));
+    });
+}
 
 app.listen(port, () => console.log(`Express server running on ${port}.`));
 
