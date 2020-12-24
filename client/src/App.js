@@ -85,7 +85,7 @@ class App extends Component {
   getDefaultGltfData() {
 
     //const urlToFetch =  process.env.NODE_ENV === 'production'?  " https://surf-shaper.herokuapp.com/defaultmodel" : "http://localhost:5000/defaultmodel";
-    const urlToFetch =  "https://surf-shaper.herokuapp.com/defaultmodel" ;
+    const urlToFetch =  "http://surf-shaper.herokuapp.com/defaultmodel" ;
 
     fetch(urlToFetch)
       .then(response => response.json())
