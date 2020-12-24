@@ -17,7 +17,7 @@ app.get('/configparams', (req, res) => {
         .then(reponse => res.send(reponse));
 });
 
-app.use(serveStatic(__dirname+'/client/dist'));
+//app.use(serveStatic(__dirname+'/client/dist'));
 
 app.get('/retrievemodelstl/:paramstoupdate', (req, res) => {
     let newConfigParameters = JSON.parse(req.params.paramstoupdate);
