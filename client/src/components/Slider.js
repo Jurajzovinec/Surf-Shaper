@@ -9,9 +9,6 @@ class Slider extends Component {
     }
 
     displayChange(e) {
-
-        console.log(e);
-        //e.preventDefault();
         let tempArray = JSON.parse(JSON.stringify(this.state.values));
         tempArray.curValue = e.target.value;
         this.setState({ values: tempArray }, () => this.renderSlider(parseFloat(e.target.value)));

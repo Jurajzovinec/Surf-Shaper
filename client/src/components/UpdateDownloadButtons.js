@@ -14,11 +14,14 @@ class UpdateDownloadButtons extends Component {
 
     sendConfiguration() {
         if (!this.props.isLoadingUpdatedSurf) {
+
             this.props.setLoadState(true);
 
             let requestParam = JSON.stringify(this.state.values);
 
-            fetch(`http://localhost:5000/retrievemodel/${requestParam}`)
+            const urlToFetch =  process.env.NODE_ENV === 'production'?  `https://surf-shaper.herokuapp.com/retrievemodel/${requestParam}` : `http://localhost:5000/retrievemodel/${requestParam}`;
+            console.log(urlToFetch);
+            fetch(urlToFetch)
                 .then(response => response.json())
                 .then(gltfData => {
                     this.props.updateGltf(this.state.activeSurf, gltfData);
@@ -30,6 +33,7 @@ class UpdateDownloadButtons extends Component {
 
     downloadStlData() {
         if (!this.props.isLoadingUpdatedSurf) {
+
             let requestParam = JSON.stringify(this.state.values);
 
             const downloadStlFile = function (stlfData) {
@@ -44,7 +48,10 @@ class UpdateDownloadButtons extends Component {
                 document.body.removeChild(a);
             };
 
-            fetch(`http://localhost:5000/retrievemodelstl/${requestParam}`)
+            const urlToFetch =  process.env.NODE_ENV === 'production'?  `https://surf-shaper.herokuapp.com/retrievemodelstl/${requestParam}` : `http://localhost:5000/retrievemodelstl/${requestParam}`;
+            console.log(urlToFetch);
+
+            fetch(urlToFetch)
                 .then(response => (response.text()))
                 .then(response => downloadStlFile(response))
                 .catch(error => console.log(error));

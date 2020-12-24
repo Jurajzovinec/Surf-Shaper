@@ -84,10 +84,9 @@ class App extends Component {
 
   getDefaultGltfData() {
 
-    //const urlToFetch =  process.env.NODE_ENV === 'production'?  " https://surf-shaper.herokuapp.com/defaultmodel" : "http://localhost:5000/defaultmodel";
-    //const urlToFetch =  "http://surf-shaper.herokuapp.com/defaultmodel" ;
-    const urlToFetch =  "http://localhost:5000/defaultmodel" ;
-
+    const urlToFetch =  process.env.NODE_ENV === 'production'?  " https://surf-shaper.herokuapp.com/defaultmodel" : "http://localhost:5000/defaultmodel";
+    console.log(urlToFetch);
+    
     fetch(urlToFetch)
       .then(response => response.json())
       .then(defaultGltfData => {
@@ -99,7 +98,6 @@ class App extends Component {
           ]
         }, () => {
           console.log('Gltf Data Received loaded');
-          console.log(this.state.gltfData);
         });
       });
 

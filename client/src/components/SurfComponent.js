@@ -26,7 +26,6 @@ const SurfComponent = ({ position, gltfData }) => {
     sceneCopy.traverse((o) => { if (o.isMesh) o.material = newMaterial; });
 
     useEffect(() => {
-        console.log(scene);
         setInitialize(true);
         setInitialize(!initialize);
     }, [buffer]);
