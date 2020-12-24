@@ -9,20 +9,20 @@ Application uses Onshape cloud based `CAD software`, where parametric model is c
 ![](SurfOnShape.png)
 
 ## What about frontend ? 
-Frontend of this application is based on Reactjs framework. 3D world is mostly built on react-three-fiber library from Paul Henschell
+Frontend of this application is based on Reactjs framework. 3D world is mostly built on react-three-fiber library from Paul Henschell. User can compare and configure three models at the same time.
 
 ![](Frontend.png)
 
 ### Lifecycle of frontend
 * Web pages loads -> 
-* Sending request to backend in order to retrieve current configurations of surfboard from www.onshape.com ->
-* Rendering of range sliders based on retrieved configuration - conherently 3D model of surfboard is rendered ->
-* After user confirmation request is sent to backend in order to update and download 3D model from www.onshape.com ->
-* Model is re-rendered in browser. 
+* API request are sent to OnShape in order to retrieve current model and its configuration parameters ->
+* After user confirm new configuration parameters, new parameters are send to onShape CAD, where geometry of surf is recalculated ->
+* New recalculated geometry is then sent back to surfshape app and is rendered.
+
 
 ## Fine then, how far we are?
 Demo version of the application has been deployed to https://surf-shaper.herokuapp.com/
-Since 3D model of surf requires more driving parameters, model is scaled to purpose of 3D printing. Surf could be download in STL format and loaded into 3D printer's slice software.
+Since 3D model of surf requires more driving parameters, model is scaled to purpose of 3D printing. Surf could be downloaded in STL format and loadeded into 3D printer's slicer software.
 
 ![](SurfPrusaSlicer.png)
 
