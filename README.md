@@ -9,7 +9,7 @@ Application uses Onshape cloud based `CAD software`, where parametric model is c
 ![](SurfOnShape.png)
 
 ## What about frontend ? 
-Frontend of this application is based on Reactjs framework. 3D world is mostly built on react-three-fiber library from Paul Henschell. User can compare and configure three models at the same time.
+Frontend of this application is based on Reactjs framework. 3D world is mostly built on react-three-fiber library by Paul Henschell. User can compare and configure three models at the same time.
 
 ![](Frontend.png)
 
