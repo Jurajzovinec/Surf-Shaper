@@ -1,8 +1,6 @@
 const express = require('express');
 const onshape = require("./lib/onshapeAPI");
 const cors = require('cors');
-const path = require('path');
-const serveStatic = require('serve-static');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -16,8 +14,6 @@ app.get('/configparams', (req, res) => {
     onshape.getConfigurationParams()
         .then(reponse => res.send(reponse));
 });
-
-//app.use(serveStatic(__dirname+'/client/dist'));
 
 app.get('/retrievemodelstl/:paramstoupdate', (req, res) => {
     let newConfigParameters = JSON.parse(req.params.paramstoupdate);
