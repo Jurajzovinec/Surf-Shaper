@@ -1,7 +1,6 @@
 const express = require('express');
 const onshape = require("./lib/onshapeAPI");
 const cors = require('cors');
-const path = require('path');
 const app = express();
 const port = process.env.PORT || 5000;
 
