@@ -3,7 +3,7 @@
 ## APPLICATION URL https://surf-shaper.herokuapp.com/
 *************************************************
 ## Purpose of SurfShaper application?
-Main goal of this web appliciation is allow user to create and shape his own sufboard. After surfboard is shaped, board could be downloaded in stl format. After that shaped surfboard may be dispatched to users's local CNC master who can made this surfboard from styrofoam.
+Main goal of this web application is allow user to create and shape his own surfboard. After surfboard is shaped, board could be downloaded in stl format. After that shaped surfboard may be dispatched to users's local CNC master who can made this surfboard from styrofoam.
 
 ## How does app work?
 Application uses Onshape cloud based `CAD software`, where parametric model is configured. After user confirms changes, model is exported to GLTF format from `Onshape` and rendered on the website with `three js`.
